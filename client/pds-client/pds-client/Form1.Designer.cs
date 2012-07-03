@@ -42,6 +42,7 @@
             this.nascondiAnteprimaBtn = new System.Windows.Forms.Button();
             this.connettiBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.clipboardBtn = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -133,7 +134,7 @@
             // 
             // nascondiChatBtn
             // 
-            this.nascondiChatBtn.Location = new System.Drawing.Point(337, 566);
+            this.nascondiChatBtn.Location = new System.Drawing.Point(252, 566);
             this.nascondiChatBtn.Name = "nascondiChatBtn";
             this.nascondiChatBtn.Size = new System.Drawing.Size(114, 28);
             this.nascondiChatBtn.TabIndex = 5;
@@ -142,7 +143,7 @@
             // 
             // nascondiAnteprimaBtn
             // 
-            this.nascondiAnteprimaBtn.Location = new System.Drawing.Point(182, 566);
+            this.nascondiAnteprimaBtn.Location = new System.Drawing.Point(49, 566);
             this.nascondiAnteprimaBtn.Name = "nascondiAnteprimaBtn";
             this.nascondiAnteprimaBtn.Size = new System.Drawing.Size(118, 28);
             this.nascondiAnteprimaBtn.TabIndex = 6;
@@ -169,11 +170,21 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Video non disponibile";
             // 
+            // clipboardBtn
+            // 
+            this.clipboardBtn.Location = new System.Drawing.Point(461, 566);
+            this.clipboardBtn.Name = "clipboardBtn";
+            this.clipboardBtn.Size = new System.Drawing.Size(120, 28);
+            this.clipboardBtn.TabIndex = 9;
+            this.clipboardBtn.Text = "Condividi clipboard";
+            this.clipboardBtn.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(967, 606);
+            this.ClientSize = new System.Drawing.Size(967, 624);
+            this.Controls.Add(this.clipboardBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.connettiBtn);
             this.Controls.Add(this.nascondiAnteprimaBtn);
@@ -210,6 +221,7 @@
         private System.Windows.Forms.Button nascondiAnteprimaBtn;
         private System.Windows.Forms.Button connettiBtn;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button clipboardBtn;
     }
 }
 
