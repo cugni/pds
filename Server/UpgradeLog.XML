@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="WindowsApplication1">
+</Property><Property Name="File di soluzione" Value="C:\Users\Unieuro\Desktop\pso2\progetto\WindowsApplication1\WindowsApplication1\WindowsApplication1.sln">
+</Property><Property Name="Date" Value="martedì 19 luglio 2011">
+</Property><Property Name="Time" Value="11.08">
+</Property></Properties><Event ErrorLevel="1" Project="WindowsApplication1" Source="WindowsApplication1\WindowsApplication1.csproj" Description="Il progetto è destinato a .NET Framework 2.0 o 3.0. Se il progetto utilizza assembly che richiedono una versione più recente di .NET Framework, la compilazione avrà esito negativo. È possibile modificare la versione di .NET Framework scegliendo Proprietà dal menu Progetto e quindi selezionando una nuova versione nella casella a discesa '.NET Framework'. In Visual Basic, questa opzione si trova nella scheda Compilazione accessibile facendo clic sul pulsante 'Impostazioni del compilatore avanzate'.">
+</Event><Event ErrorLevel="0" Project="WindowsApplication1" Source="WindowsApplication1\WindowsApplication1.csproj" Description="Conversione progetto riuscita">
+</Event><Event ErrorLevel="3" Project="WindowsApplication1" Source="WindowsApplication1\WindowsApplication1.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="WindowsApplication1.sln" Description="Soluzione convertita correttamente">
+</Event><Event ErrorLevel="3" Project="" Source="WindowsApplication1.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="WindowsApplication1" Source="WindowsApplication1\WindowsApplication1.csproj" Description="Analisi completata. Non è richiesto alcun aggiornamento per i file di progetto.">
+</Event></UpgradeLog>

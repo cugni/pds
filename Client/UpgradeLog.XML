@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="ChatClient">
+</Property><Property Name="File di soluzione" Value="D:\Visual\c#\materiale\chat bella\ChatClient\ChatClient.sln">
+</Property><Property Name="File di opzioni utente" Value="D:\Visual\c#\materiale\chat bella\ChatClient\ChatClient.suo">
+</Property><Property Name="Date" Value="venerdì 19 agosto 2011">
+</Property><Property Name="Time" Value="15:32">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="ChatClient.sln" Description="File salvato come D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient.sln">
+</Event><Event ErrorLevel="0" Project="" Source="ChatClient.suo" Description="File salvato come D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient.suo">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\ChatClient.csproj" Description="Backup del file di progetto creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\ChatClient.csproj">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Form1.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Form1.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Form1.Designer.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Form1.Designer.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Program.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Program.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Properties\AssemblyInfo.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Properties\Resources.Designer.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Properties\Resources.Designer.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Properties\Settings.Designer.cs" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Properties\Settings.Designer.cs">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Properties\Settings.settings" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Properties\Settings.settings">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Form1.resx" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Form1.resx">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\Properties\Resources.resx" Description="Backup del file creato con nome D:\Visual\c#\materiale\chat bella\ChatClient\Backup\ChatClient\Properties\Resources.resx">
+</Event><Event ErrorLevel="1" Project="ChatClient" Source="ChatClient\ChatClient.csproj" Description="Il progetto è destinato a .NET Framework 2.0 o 3.0. Se il progetto utilizza assembly che richiedono una versione più recente di .NET Framework, la compilazione avrà esito negativo. È possibile modificare la versione di .NET Framework scegliendo Proprietà dal menu Progetto e quindi selezionando una nuova versione nella casella a discesa '.NET Framework'. In Visual Basic, questa opzione si trova nella scheda Compilazione accessibile facendo clic sul pulsante 'Impostazioni del compilatore avanzate'.">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\ChatClient.csproj" Description="Conversione progetto riuscita">
+</Event><Event ErrorLevel="3" Project="ChatClient" Source="ChatClient\ChatClient.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="ChatClient.sln" Description="Soluzione convertita correttamente">
+</Event><Event ErrorLevel="3" Project="" Source="ChatClient.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ChatClient" Source="ChatClient\ChatClient.csproj" Description="Analisi completata. Non è richiesto alcun aggiornamento per i file di progetto.">
+</Event></UpgradeLog>
