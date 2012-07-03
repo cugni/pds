@@ -9,11 +9,14 @@ using System.Windows.Forms;
 
 namespace pds_server
 {
-    public partial class Form1 : Form
+    public partial class Autenticazione : Form
     {
-        public Form1()
+        public Autenticazione()
         {
             InitializeComponent();
         }
+
+
+
     }
 }

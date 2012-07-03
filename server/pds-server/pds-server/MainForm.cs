@@ -7,21 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace pds_client
+namespace pds_server
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
 
-        }
-
-
+ 
+ 
+      
 
 
     }
