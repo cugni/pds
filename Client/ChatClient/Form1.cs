@@ -151,8 +151,8 @@ namespace ChatClient
             catch
             {
                 //txtLog.AppendText("Error in connecting to server "+ipAddr.ToString()+" !\r\n\r\n");
-                MessageBox.Show("Error while trying to connect!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                connectBtn.Text = "Connect";
+                MessageBox.Show("Errore durante la connessione!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                connectBtn.Text = "Connetti";
                 connectBtn.BackColor = DefaultBackColor;
             }
         }
@@ -199,7 +199,7 @@ namespace ChatClient
             }
             else // If the first character is not a 1 (probably a 0), the connection was unsuccessful
             {
-                string Reason = "Not Connected: ";
+                string Reason = "Non Connesso: ";
                 // Extract the reason out of the response message. The reason starts at the 3rd character
                 Reason += ConResponse.Substring(2, ConResponse.Length - 2);
                 try
@@ -224,14 +224,14 @@ namespace ChatClient
                 }
                 catch
                 {
-                    string Reason = "Disconnected by server!";
+                    string Reason = "Disconnesso dal server!";
                     //MessageBox.Show("Disconnessione!");
                     //CloseConnection("Disconnected...");
                     //btnConnect.Text = "Connect";
                     if (Connected)
                     {
                         this.Invoke(new CloseConnectionCallback(this.CloseConnection), new object[] { Reason });
-                        connectBtn.Text = "Connect";
+                        connectBtn.Text = "Connesso";
                         connectBtn.BackColor = DefaultBackColor;
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason});
                         str.Close();
@@ -412,7 +412,7 @@ namespace ChatClient
         public bool setNick(string n) {
             if (string.IsNullOrEmpty(n))
             {
-                MessageBox.Show("Insert a username!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Insertisci username!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             UserName = n;
@@ -422,7 +422,7 @@ namespace ChatClient
         {
             if (string.IsNullOrEmpty(n))
             {
-                MessageBox.Show("Insert a password!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Inserisci password!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             passw = n;
@@ -438,7 +438,7 @@ namespace ChatClient
             }
             catch
             {
-                MessageBox.Show("Insert a valid Ip address!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Inserisci un indirizzo IP valido!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -452,7 +452,7 @@ namespace ChatClient
             }
             catch
             {
-                MessageBox.Show("Insert a valid port!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Inserisci una porta valida!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -476,9 +476,9 @@ namespace ChatClient
             this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
             //this.txtLog.ForeColor = System.Drawing.Color.Green;alby10
             this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Italic);
-            this.txtLog.Text = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
-            //alby
-            label1.Text = "Video Not Avaiable";
+            //this.txtLog.Text = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
+            this.txtLog.Text = "Per utilizzare il programma premi il pulsante Connetti e inserisci le impostazoni di connessione. \r\n E' anche possibile modificare le informazioni in File->Impostazioni.\r\n\r\n";
+            label1.Text = "Video Non Disponibile";
             label1.Size = new System.Drawing.Size(19, 29);
             label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             label1.Visible = true;
@@ -515,7 +515,7 @@ namespace ChatClient
             {
                 button2.Enabled = false;
                 pictureBox1.Hide();
-                button1.Text = "Show server preview";
+                button1.Text = "Visualizza anteprima";
                 label1.Visible = false;//alby
                 pictureBox1.BackColor = Color.Beige;
                 this.Width = txtLog.Width + 100;
@@ -531,7 +531,7 @@ namespace ChatClient
                 pictureBox1.BackColor = Color.Black;
                 this.Width = Screen.PrimaryScreen.WorkingArea.Width;
                 pictureBox1.Show();
-                button1.Text = "Hide server preview";
+                button1.Text = "Nascondi anteprima";
                 record_showing = true;
                 this.Left = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
                 this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
@@ -556,7 +556,7 @@ namespace ChatClient
                 txtMessage.Hide();
                 btnSend.Hide();
                 bntClipboard.Hide();
-                button2.Text = "Show chat";
+                button2.Text = "Mostra chat";
                 this.Left = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
                 this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
                 //pictureBox1.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top);
@@ -583,7 +583,7 @@ namespace ChatClient
                 pictureBox1.Height = this.Height - 75;
                 pictureBox1.Refresh();
                 labelCenter();
-                button2.Text = "Hide chat";
+                button2.Text = "Nascondi chat";
                 chat = true;
             }
         }
@@ -610,7 +610,7 @@ namespace ChatClient
                     else
                         SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
                     break;
-
+                    
                 default:
                     base.WndProc(ref m);
                     break;
@@ -626,7 +626,8 @@ namespace ChatClient
             txtLog.AppendText(" ");
             //alby5 end
             
-            string testo = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
+            //string testo = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
+            string testo = "Per connetterti devi inserire le impostazioni in File -> Impostazioni e cliccare il pulsante Connetti.\r\n\r\n";
             this.txtLog.SelectionFont = new Font(txtLog.SelectionFont, FontStyle.Italic);
             txtLog.SelectionColor = Color.Green;
             this.txtLog.AppendText(testo);
@@ -659,7 +660,7 @@ namespace ChatClient
 
                     if (what.Substring(0, 4).Equals("File"))
                     {
-                        string Reason = "Receving Clipboard...";
+                        string Reason = "Ricevendo Clipboard...";
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
                         paths.Clear();
                         string qta = what.Substring(4, 1);
@@ -680,7 +681,7 @@ namespace ChatClient
                             paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);                          
                             //SetClipboard(fileName);
                         }
-                        Reason = "Share Clipboard";
+                        Reason = "Condividi Clipboard";
                         this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                         if (abort==false)
                             this.Invoke(new UpdateClipboardCallback(UpdateClipboard), new object[] { paths });
@@ -688,7 +689,7 @@ namespace ChatClient
 
                     else if (what.Substring(0, 4).Equals("Text")) // text
                     {
-                        string Reason = "Receving Clipboard...";
+                        string Reason = "Ricevendo Clipboard...";
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
                         byte[] bytes = new byte[tcpClip.ReceiveBufferSize];
 
@@ -700,20 +701,20 @@ namespace ChatClient
                         IDataObject ido = new DataObject();
                         ido.SetData(text);
                         Clipboard.SetDataObject(ido, true);
-                        Reason = "Share Clipboard";
+                        Reason = "Condividi Clipboard";
                         this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                         //MessageBox.Show(text);
                     }
 
                     else if (what.Substring(0, 4).Equals("Imag")) // bitmap
                     {
-                        string Reason = "Receving Clipboard...";
+                        string Reason = "Ricevendo Clipboard...";
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
                         Stream stm = tcpClip.GetStream();
                         IFormatter formatter = new BinaryFormatter();
                         Bitmap bitm = (Bitmap)formatter.Deserialize(stm);
                         Clipboard.SetImage(bitm);
-                        Reason = "Share Clipboard";
+                        Reason = "Condividi Clipboard";
                         this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                     }
                 }
@@ -747,7 +748,7 @@ namespace ChatClient
             StreamWriter sw = new StreamWriter(tcpClip.GetStream());
             IDataObject d = (IDataObject)data;
 
-            string Reason = "Sharing Clipboard...";
+            string Reason = "Condividendo Clipboard...";
             this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
 
             // Vettore di filenames presenti dentro la clipboard
@@ -762,7 +763,7 @@ namespace ChatClient
             }
             catch
             {
-                Reason = "Share Clipboard";
+                Reason = "Condividi Clipboard";
                 this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                 return;
             }
@@ -770,7 +771,7 @@ namespace ChatClient
             {
                 if (Path.GetFileName(sourceFileName) == "")
                 {
-                    System.Windows.Forms.MessageBox.Show("Sharing failed: it's impossible to copy a directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show("Condivisione fallita: impossibie copiare una directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     bntClipboard.Enabled = false;
                     return;
                 }
@@ -781,7 +782,7 @@ namespace ChatClient
                     float size = (float)(fleMembers.Length / 1024 / 1024); //MB
                     if (size > 50)
                     {
-                        System.Windows.Forms.MessageBox.Show("It's impossible to send " + sourceFileName + " because the file is too big", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("Impossibile inviare il file " + sourceFileName + ": dimensione troppo grande!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         continue;
                     }
                 }
@@ -808,7 +809,7 @@ namespace ChatClient
                     }
                     catch
                     {
-                        Reason = "Share Clipboard";
+                        Reason = "Condividi Clipboard";
                         this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                         return;
                     }
@@ -819,12 +820,12 @@ namespace ChatClient
                     //this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                     //this.Invoke(new DisableClipboardCallback(this.TextClipboard), new object[] { Reason });
                     // In caso di problemi sul server
-                    System.Windows.Forms.MessageBox.Show("Sharing failed: it's impossible to copy a directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show("Condivisione fallita: impossibie copiare una directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     sw.WriteLine("Abort");
                     sw.Flush();
                 }
             }
-            Reason = "Share Clipboard";
+            Reason = "Codividi Clipboard";
             this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
         }
 
@@ -840,7 +841,7 @@ namespace ChatClient
                 try
                 {
                     bntClipboard.Enabled = false;
-                    bntClipboard.Text = "Sharing Clipboard...";
+                    bntClipboard.Text = "Condividendo Clipboard...";
                     sw.WriteLine("Text"+UserName);
                     sw.Flush();
                     NetworkStream netstream = tcpClip.GetStream();
@@ -848,14 +849,14 @@ namespace ChatClient
                     Byte[] sendBytes = Encoding.ASCII.GetBytes(strclip);
                     netstream.Write(sendBytes, 0, sendBytes.Length);
                     bntClipboard.Enabled = true;
-                    bntClipboard.Text = "Share Clipboard";
+                    bntClipboard.Text = "Condividendo Clipboard";
                     //MessageBox.Show("inviato");
                 }
                 catch (Exception ex)
                 {
                     //MessageBox.Show(ex.ToString());
                     bntClipboard.Enabled = true;
-                    bntClipboard.Text = "Share Clipboard";
+                    bntClipboard.Text = "Condividendo Clipboard";
                     return;
                 }
             }
@@ -869,7 +870,7 @@ namespace ChatClient
             else if (Clipboard.ContainsImage())
             {
                 bntClipboard.Enabled = false;
-                bntClipboard.Text = "Sharing Clipboard...";
+                bntClipboard.Text = "Condividendo Clipboard...";
                 Bitmap img = (Bitmap)Clipboard.GetImage();
                 sw.WriteLine("Imag" + UserName);
                 sw.Flush();
@@ -883,19 +884,19 @@ namespace ChatClient
                 catch (Exception exc)
                 {
                     bntClipboard.Enabled = true;
-                    bntClipboard.Text = "Share Clipboard";
+                    bntClipboard.Text = "Condividi Clipboard";
                     //MessageBox.Show(exc.ToString());
                     return;
                 }
                 bntClipboard.Enabled = true;
-                bntClipboard.Text = "Share Clipboard";
+                bntClipboard.Text = "Condividi Clipboard";
                 //Clipboard.Clear();
                 //MessageBox.Show("ok!");
                 //Clipboard.SetImage(img);
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Sending failed: clipboard is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show("Invio fallito: la clipboard è vuota", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 bntClipboard.Enabled = false;
             }
         }
@@ -922,9 +923,9 @@ namespace ChatClient
                 //alby2 start
                 string text = "#####";//alby10
                 swSender.WriteLine(text);
-                CloseConnection("Disconnected at user's request.");
+                CloseConnection("Disconnesso su richiesta dell'utente.");
                 
-                connectBtn.Text = "Connect";
+                connectBtn.Text = "Connetti";
                 connectBtn.BackColor = DefaultBackColor;
                 //str.Close();
 

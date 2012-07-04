@@ -55,7 +55,7 @@ namespace ChatClient
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(67, 49);
             this.btnSend.TabIndex = 3;
-            this.btnSend.Text = "Send";
+            this.btnSend.Text = "Invia";
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
@@ -94,7 +94,7 @@ namespace ChatClient
             // 
             this.impostazioniToolStripMenuItem.Name = "impostazioniToolStripMenuItem";
             this.impostazioniToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.impostazioniToolStripMenuItem.Text = "Settings";
+            this.impostazioniToolStripMenuItem.Text = "Impostazioni";
             this.impostazioniToolStripMenuItem.Click += new System.EventHandler(this.impostazioniToolStripMenuItem_Click);
             // 
             // esciToolStripMenuItem
@@ -152,7 +152,7 @@ namespace ChatClient
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(128, 23);
             this.button1.TabIndex = 11;
-            this.button1.Text = "Hide server preview";
+            this.button1.Text = "Nascondi anteprima";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -163,7 +163,7 @@ namespace ChatClient
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(128, 23);
             this.button2.TabIndex = 15;
-            this.button2.Text = "Hide chat";
+            this.button2.Text = "Nascondi chat";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -186,9 +186,9 @@ namespace ChatClient
             this.bntClipboard.Enabled = false;
             this.bntClipboard.Location = new System.Drawing.Point(573, 468);
             this.bntClipboard.Name = "bntClipboard";
-            this.bntClipboard.Size = new System.Drawing.Size(96, 23);
+            this.bntClipboard.Size = new System.Drawing.Size(128, 23);
             this.bntClipboard.TabIndex = 14;
-            this.bntClipboard.Text = "Share Clipboard";
+            this.bntClipboard.Text = "Condividi Clipboard";
             this.bntClipboard.UseVisualStyleBackColor = true;
             this.bntClipboard.Click += new System.EventHandler(this.bntClipboard_Click);
             // 
@@ -199,7 +199,7 @@ namespace ChatClient
             this.connectBtn.Name = "connectBtn";
             this.connectBtn.Size = new System.Drawing.Size(110, 49);
             this.connectBtn.TabIndex = 15;
-            this.connectBtn.Text = "Connect";
+            this.connectBtn.Text = "Connetti";
             this.connectBtn.UseVisualStyleBackColor = true;
             this.connectBtn.Click += new System.EventHandler(this.connectBtn_Click);
             // 
