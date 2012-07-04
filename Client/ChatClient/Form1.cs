@@ -231,8 +231,7 @@ namespace ChatClient
                     if (Connected)
                     {
                         this.Invoke(new CloseConnectionCallback(this.CloseConnection), new object[] { Reason });
-                        connectBtn.Text = "Connesso";
-                        connectBtn.BackColor = DefaultBackColor;
+
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason});
                         str.Close();
                         //bntClipboard.Enabled = false;
@@ -648,64 +647,68 @@ namespace ChatClient
                 {
                     string what = str.ReadLine();
 
-                    if (what.Substring(0, 4).Equals("File"))
+                    if (MessageBox.Show("E' stata condivisa una clipboard.\n Accettarla, sovrascrivendo la clipboard attuale?", "Clipboard condivisa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        string Reason = "Ricevendo Clipboard...";
-                        this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
-                        paths.Clear();
-                        string qta = what.Substring(4, 1);
-                        for (j = 0; j < int.Parse(qta); j++)
+                        if (what.Substring(0, 4).Equals("File"))
                         {
-                            string tmp = str.ReadLine();
-                            if (tmp.Equals("Abort"))
+                            string Reason = "Ricevendo Clipboard...";
+                            this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
+                            paths.Clear();
+                            string qta = what.Substring(4, 1);
+                            for (j = 0; j < int.Parse(qta); j++)
                             {
-                                abort = true;
-                                break;
+                                string tmp = str.ReadLine();
+                                if (tmp.Equals("Abort"))
+                                {
+                                    abort = true;
+                                    break;
+                                }
+                                abort = false;
+                                string fileName = tmp.Substring(6);
+                                byte[] clientData = Convert.FromBase64String(str.ReadLine());
+                                BinaryWriter bWrite = new BinaryWriter(File.Open(Path.GetFullPath(@".\File ricevuti\") + fileName, FileMode.Create));
+                                bWrite.Write(clientData, 4 + fileName.Length, clientData.Length - 4 - fileName.Length);
+                                bWrite.Close();
+                                paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);
+                                //SetClipboard(fileName);
                             }
-                            abort = false;
-                            string fileName = tmp.Substring(6);
-                            byte[] clientData = Convert.FromBase64String(str.ReadLine());
-                            BinaryWriter bWrite = new BinaryWriter(File.Open(Path.GetFullPath(@".\File ricevuti\") + fileName, FileMode.Create));
-                            bWrite.Write(clientData, 4 + fileName.Length, clientData.Length - 4 - fileName.Length);
-                            bWrite.Close();
-                            paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);                          
-                            //SetClipboard(fileName);
+                            Reason = "Condividi Clipboard";
+                            this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
+                            if (abort == false)
+                                this.Invoke(new UpdateClipboardCallback(UpdateClipboard), new object[] { paths });
                         }
-                        Reason = "Condividi Clipboard";
-                        this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
-                        if (abort==false)
-                            this.Invoke(new UpdateClipboardCallback(UpdateClipboard), new object[] { paths });
-                    }
 
-                    else if (what.Substring(0, 4).Equals("Text")) // text
-                    {
-                        string Reason = "Ricevendo Clipboard...";
-                        this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
-                        byte[] bytes = new byte[tcpClip.ReceiveBufferSize];
+                        else if (what.Substring(0, 4).Equals("Text")) // text
+                        {
+                            string Reason = "Ricevendo Clipboard...";
+                            this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
+                            byte[] bytes = new byte[tcpClip.ReceiveBufferSize];
 
-                        // Read can return anything from 0 to numBytesToRead. 
-                        // This method blocks until at least one byte is read.
-                        netstream.Read(bytes, 0, (int)tcpClip.ReceiveBufferSize);
-                        string textcrc = Encoding.ASCII.GetString(bytes);
-                        text = TrimFromZero(textcrc);
-                        IDataObject ido = new DataObject();
-                        ido.SetData(text);
-                        Clipboard.SetDataObject(ido, true);
-                        Reason = "Condividi Clipboard";
-                        this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
-                        //MessageBox.Show(text);
-                    }
+                            // Read can return anything from 0 to numBytesToRead. 
+                            // This method blocks until at least one byte is read.
+                            netstream.Read(bytes, 0, (int)tcpClip.ReceiveBufferSize);
+                            string textcrc = Encoding.ASCII.GetString(bytes);
+                            text = TrimFromZero(textcrc);
+                            IDataObject ido = new DataObject();
+                            ido.SetData(text);
+                            Clipboard.SetDataObject(ido, true);
+                            Reason = "Condividi Clipboard";
+                            this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
+                            //MessageBox.Show(text);
+                        }
 
-                    else if (what.Substring(0, 4).Equals("Imag")) // bitmap
-                    {
-                        string Reason = "Ricevendo Clipboard...";
-                        this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
-                        Stream stm = tcpClip.GetStream();
-                        IFormatter formatter = new BinaryFormatter();
-                        Bitmap bitm = (Bitmap)formatter.Deserialize(stm);
-                        Clipboard.SetImage(bitm);
-                        Reason = "Condividi Clipboard";
-                        this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
+                        else if (what.Substring(0, 4).Equals("Imag")) // bitmap
+                        {
+                            string Reason = "Ricevendo Clipboard...";
+                            this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason });
+                            Stream stm = tcpClip.GetStream();
+                            IFormatter formatter = new BinaryFormatter();
+                            Bitmap bitm = (Bitmap)formatter.Deserialize(stm);
+                            Clipboard.SetImage(bitm);
+                            Reason = "Condividi Clipboard";
+                            this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
+                        }
+
                     }
                 }
 
@@ -893,6 +896,7 @@ namespace ChatClient
 
         private void connectBtn_Click(object sender, EventArgs e)
         {
+
             if (Connected == false) //connessione
             {
                 if (first == true && flagVis == false) //apri impostazioni
@@ -910,11 +914,11 @@ namespace ChatClient
             }
             else //disconnessione
             {
-                
+
                 string text = "#####";
                 swSender.WriteLine(text);
                 CloseConnection("Disconnesso su richiesta dell'utente.");
-                
+
                 connectBtn.Text = "Connetti";
                 connectBtn.BackColor = DefaultBackColor;
                 //str.Close();
@@ -923,7 +927,7 @@ namespace ChatClient
                 //workerThread.Abort();
 
                 //tolto tutto..e messo in CloseConnection
-                
+
                 bntClipboard.Enabled = false;
             }
             

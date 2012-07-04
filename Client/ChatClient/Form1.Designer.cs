@@ -93,14 +93,14 @@ namespace ChatClient
             // impostazioniToolStripMenuItem
             // 
             this.impostazioniToolStripMenuItem.Name = "impostazioniToolStripMenuItem";
-            this.impostazioniToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.impostazioniToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.impostazioniToolStripMenuItem.Text = "Impostazioni";
             this.impostazioniToolStripMenuItem.Click += new System.EventHandler(this.impostazioniToolStripMenuItem_Click);
             // 
             // esciToolStripMenuItem
             // 
             this.esciToolStripMenuItem.Name = "esciToolStripMenuItem";
-            this.esciToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.esciToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.esciToolStripMenuItem.Text = "Esci";
             this.esciToolStripMenuItem.Click += new System.EventHandler(this.esciToolStripMenuItem_Click);
             // 
@@ -184,7 +184,7 @@ namespace ChatClient
             // 
             this.bntClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bntClipboard.Enabled = false;
-            this.bntClipboard.Location = new System.Drawing.Point(573, 468);
+            this.bntClipboard.Location = new System.Drawing.Point(630, 468);
             this.bntClipboard.Name = "bntClipboard";
             this.bntClipboard.Size = new System.Drawing.Size(128, 23);
             this.bntClipboard.TabIndex = 14;
@@ -220,10 +220,9 @@ namespace ChatClient
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Screen Sharing *client*";
+            this.Text = "Client";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
