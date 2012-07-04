@@ -32,7 +32,6 @@ namespace ChatClient
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.connettiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.impostazioniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.esciToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,6 +42,7 @@ namespace ChatClient
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.bntClipboard = new System.Windows.Forms.Button();
+            this.connectBtn = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -84,31 +84,23 @@ namespace ChatClient
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.connettiToolStripMenuItem,
             this.impostazioniToolStripMenuItem,
             this.esciToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // connettiToolStripMenuItem
-            // 
-            this.connettiToolStripMenuItem.Name = "connettiToolStripMenuItem";
-            this.connettiToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.connettiToolStripMenuItem.Text = "Connect";
-            this.connettiToolStripMenuItem.Click += new System.EventHandler(this.connettiToolStripMenuItem_Click);
-            // 
             // impostazioniToolStripMenuItem
             // 
             this.impostazioniToolStripMenuItem.Name = "impostazioniToolStripMenuItem";
-            this.impostazioniToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.impostazioniToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.impostazioniToolStripMenuItem.Text = "Settings";
             this.impostazioniToolStripMenuItem.Click += new System.EventHandler(this.impostazioniToolStripMenuItem_Click);
             // 
             // esciToolStripMenuItem
             // 
             this.esciToolStripMenuItem.Name = "esciToolStripMenuItem";
-            this.esciToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.esciToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.esciToolStripMenuItem.Text = "Esci";
             this.esciToolStripMenuItem.Click += new System.EventHandler(this.esciToolStripMenuItem_Click);
             // 
@@ -134,7 +126,7 @@ namespace ChatClient
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BackColor = System.Drawing.Color.Black;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 27);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 53);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(518, 519);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -156,9 +148,9 @@ namespace ChatClient
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(777, 27);
+            this.button1.Location = new System.Drawing.Point(756, 24);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 37);
+            this.button1.Size = new System.Drawing.Size(128, 23);
             this.button1.TabIndex = 11;
             this.button1.Text = "Hide server preview";
             this.button1.UseVisualStyleBackColor = true;
@@ -167,10 +159,10 @@ namespace ChatClient
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(573, 28);
+            this.button2.Location = new System.Drawing.Point(756, 53);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(96, 36);
-            this.button2.TabIndex = 12;
+            this.button2.Size = new System.Drawing.Size(128, 23);
+            this.button2.TabIndex = 15;
             this.button2.Text = "Hide chat";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
@@ -180,10 +172,11 @@ namespace ChatClient
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Black;
-            this.label1.ForeColor = System.Drawing.Color.Goldenrod;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Orange;
             this.label1.Location = new System.Drawing.Point(224, 200);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(107, 13);
+            this.label1.Size = new System.Drawing.Size(180, 20);
             this.label1.TabIndex = 13;
             this.label1.Text = "Video non disponibile";
             // 
@@ -193,17 +186,29 @@ namespace ChatClient
             this.bntClipboard.Enabled = false;
             this.bntClipboard.Location = new System.Drawing.Point(573, 468);
             this.bntClipboard.Name = "bntClipboard";
-            this.bntClipboard.Size = new System.Drawing.Size(122, 23);
+            this.bntClipboard.Size = new System.Drawing.Size(96, 23);
             this.bntClipboard.TabIndex = 14;
             this.bntClipboard.Text = "Share Clipboard";
             this.bntClipboard.UseVisualStyleBackColor = true;
             this.bntClipboard.Click += new System.EventHandler(this.bntClipboard_Click);
+            // 
+            // connectBtn
+            // 
+            this.connectBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.connectBtn.Location = new System.Drawing.Point(573, 24);
+            this.connectBtn.Name = "connectBtn";
+            this.connectBtn.Size = new System.Drawing.Size(110, 49);
+            this.connectBtn.TabIndex = 15;
+            this.connectBtn.Text = "Connect";
+            this.connectBtn.UseVisualStyleBackColor = true;
+            this.connectBtn.Click += new System.EventHandler(this.connectBtn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(935, 584);
+            this.Controls.Add(this.connectBtn);
             this.Controls.Add(this.bntClipboard);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
@@ -235,7 +240,6 @@ namespace ChatClient
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem impostazioniToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem connettiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem esciToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.RichTextBox txtLog;
@@ -245,6 +249,7 @@ namespace ChatClient
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.Button bntClipboard;
+        private System.Windows.Forms.Button connectBtn;
     }
 }
 

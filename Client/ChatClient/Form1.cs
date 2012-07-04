@@ -130,7 +130,8 @@ namespace ChatClient
                 Connected = true;
                 txtMessage.Enabled = true;
                 btnSend.Enabled = true;
-                connettiToolStripMenuItem.Text = "Disconnect";
+                connectBtn.Text = "Disconnect";
+                connectBtn.BackColor = Color.Red;
                 if (first == true)
                 {
                     txtLog.Clear();
@@ -151,7 +152,8 @@ namespace ChatClient
             {
                 //txtLog.AppendText("Error in connecting to server "+ipAddr.ToString()+" !\r\n\r\n");
                 MessageBox.Show("Error while trying to connect!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                connettiToolStripMenuItem.Text = "Connect";
+                connectBtn.Text = "Connect";
+                connectBtn.BackColor = DefaultBackColor;
             }
         }
 
@@ -229,7 +231,8 @@ namespace ChatClient
                     if (Connected)
                     {
                         this.Invoke(new CloseConnectionCallback(this.CloseConnection), new object[] { Reason });
-                        connettiToolStripMenuItem.Text = "Connect";
+                        connectBtn.Text = "Connect";
+                        connectBtn.BackColor = DefaultBackColor;
                         this.Invoke(new DisableClipboardCallback(this.DisableClipboard), new object[] { Reason});
                         str.Close();
                         //bntClipboard.Enabled = false;
@@ -307,7 +310,8 @@ namespace ChatClient
             //txtUser.Enabled = true;
             txtMessage.Enabled = false;
             btnSend.Enabled = false;
-            connettiToolStripMenuItem.Text = "Connect";
+            connectBtn.Text = "Connect";
+            connectBtn.BackColor = DefaultBackColor;
             //btnConnect.Text = "Connect";
 
             // Close the objects
@@ -460,37 +464,7 @@ namespace ChatClient
 
         private void connettiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Connected == false) //let's connect
-            {
-                if (first == true && flagVis == false) //open setting
-                {
-                    //Apertura Autenticazione
-                    settings = new Form2(this);
-                    settings.ShowDialog();
-                    //utente preme annulla
-                    if (flagVis == false)
-                        return;
-                }
 
-                InitializeConnection();
-
-            }
-            else // let's disconnect
-            {
-                //alby2 start
-                string text = "#####";//alby10
-                swSender.WriteLine(text);
-                CloseConnection("Disconnected at user's request.");
-                connettiToolStripMenuItem.Text = "Connect";
-                //str.Close();
-
-                //Application.Restart(); ///////puo' andare questo?
-                //workerThread.Abort();
-
-                //tolto tutto..e messo in CloseConnection
-                //alby2 end
-                bntClipboard.Enabled = false;
-            }
             
         }
 
@@ -587,7 +561,7 @@ namespace ChatClient
                 this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
                 //pictureBox1.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top);
                 pictureBox1.Height = this.Height - 125;
-                pictureBox1.Top = this.Top + 75;
+                pictureBox1.Top = this.Top + 80;
                 pictureBox1.Width = this.Width - 50;
                 pictureBox1.Refresh();
                 labelCenter();
@@ -924,6 +898,44 @@ namespace ChatClient
                 System.Windows.Forms.MessageBox.Show("Sending failed: clipboard is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 bntClipboard.Enabled = false;
             }
+        }
+
+        private void connectBtn_Click(object sender, EventArgs e)
+        {
+            if (Connected == false) //let's connect
+            {
+                if (first == true && flagVis == false) //open setting
+                {
+                    //Apertura Autenticazione
+                    settings = new Form2(this);
+                    settings.ShowDialog();
+                    //utente preme annulla
+                    if (flagVis == false)
+                        return;
+                }
+
+                InitializeConnection();
+
+            }
+            else // let's disconnect
+            {
+                //alby2 start
+                string text = "#####";//alby10
+                swSender.WriteLine(text);
+                CloseConnection("Disconnected at user's request.");
+                
+                connectBtn.Text = "Connect";
+                connectBtn.BackColor = DefaultBackColor;
+                //str.Close();
+
+                //Application.Restart(); ///////puo' andare questo?
+                //workerThread.Abort();
+
+                //tolto tutto..e messo in CloseConnection
+                //alby2 end
+                bntClipboard.Enabled = false;
+            }
+            
         }
 
     }
