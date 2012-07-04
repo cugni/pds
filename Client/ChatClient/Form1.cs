@@ -20,17 +20,17 @@ namespace ChatClient
     public delegate void aggiornaPicture(Bitmap btmp, bool ret);
     public partial class Form1 : Form
     {
-        // Will hold the user name
+        // Dati 
         private string UserName = "", passw = "";
         private int port=0, port_scr;
         private StreamWriter swSender;
         private StreamReader srReceiver;
-        private StreamReader str; // for clipboard
+        private StreamReader str; // per clipboard
         private TcpClient tcpServer;
         private TcpClient tcpClip;
-        // Needed to update the form with messages from another thread
+        // Per aggiornare il form con messaggi da altri thread
         private delegate void UpdateLogCallback(string strMessage);
-        // Needed to set the form to a "disconnected" state from another thread
+        // Per settare il form in "disconnesso" da un altro thread
         private delegate void CloseConnectionCallback(string strReason);
         private delegate void DisableClipboardCallback(string strReason);
         private delegate void UpdateClipboardCallback(System.Collections.Specialized.StringCollection paths); 
@@ -45,7 +45,7 @@ namespace ChatClient
         //alby end
 
 
-        //for clipboard
+        //per clipboard
         [DllImport("User32.dll")]
         protected static extern int SetClipboardViewer(int hWndNewViewer);
 
@@ -620,19 +620,9 @@ namespace ChatClient
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-
-            //alby5
-            txtLog.SelectionColor = Color.Black;
-            txtLog.AppendText(" ");
-            //alby5 end
-            
-            //string testo = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
             string testo = "Per connetterti devi inserire le impostazioni in File -> Impostazioni e cliccare il pulsante Connetti.\r\n\r\n";
-            this.txtLog.SelectionFont = new Font(txtLog.SelectionFont, FontStyle.Italic);
-            txtLog.SelectionColor = Color.Green;
-            this.txtLog.AppendText(testo);
-            //this.txtLog.SelectionStart = txtLog.TextLength;
-            //this.txtLog.SelectionColor = System.Drawing.Color.Green;
+            MessageBox.Show(testo, "Help", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
         }
 
         private void txtLog_TextChanged_1(object sender, EventArgs e)
@@ -903,9 +893,9 @@ namespace ChatClient
 
         private void connectBtn_Click(object sender, EventArgs e)
         {
-            if (Connected == false) //let's connect
+            if (Connected == false) //connessione
             {
-                if (first == true && flagVis == false) //open setting
+                if (first == true && flagVis == false) //apri impostazioni
                 {
                     //Apertura Autenticazione
                     settings = new Form2(this);
@@ -918,10 +908,10 @@ namespace ChatClient
                 InitializeConnection();
 
             }
-            else // let's disconnect
+            else //disconnessione
             {
-                //alby2 start
-                string text = "#####";//alby10
+                
+                string text = "#####";
                 swSender.WriteLine(text);
                 CloseConnection("Disconnesso su richiesta dell'utente.");
                 
@@ -933,7 +923,7 @@ namespace ChatClient
                 //workerThread.Abort();
 
                 //tolto tutto..e messo in CloseConnection
-                //alby2 end
+                
                 bntClipboard.Enabled = false;
             }
             

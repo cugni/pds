@@ -47,8 +47,8 @@ namespace ChatClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //alby4
-            //txtUser.Text = "albyy";
+            
+            //txtUser.Text = "mauro";
             //txtPassw.Text = "ciao";
             //txtPort.Text = "1500";
             //txtIp.Text = "130.192.31.225";
