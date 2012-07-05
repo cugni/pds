@@ -237,7 +237,7 @@ namespace Server
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.Button bntClipboard;
         private System.Windows.Forms.ToolStripMenuItem configurazioneTastiToolStripMenuItem;
-        //alby --> NON TOGLIERE STATIC
+
         public static System.Windows.Forms.Label label1;
         public static System.Windows.Forms.ToolStripMenuItem StartToolStripMenuItem;
         public static System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;

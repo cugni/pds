@@ -11,65 +11,50 @@ using System.Security.Cryptography;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Server.worker;
+using Shared.Message;
 
 namespace Server
 {
-    // Holds the arguments for the StatusChanged event
-    public class StatusChangedEventArgs : EventArgs
+    public class TransferException : Exception
     {
-        // The argument we're interested in is a message describing the event
-        private string EventMsg;
-
-        // Property for retrieving and setting the event message
-        public string EventMessage
+      public  TransferException(string message)
+            : base(message)
         {
-            get
-            {
-                return EventMsg;
-            }
-            set
-            {
-                EventMsg = value;
-            }
-        }
-
-        // Constructor for setting the event message
-        public StatusChangedEventArgs(string strEventMsg)
-        {
-            EventMsg = strEventMsg;
         }
     }
-
+   
     // This delegate is needed to specify the parameters we're passing with our event
-    public delegate void StatusChangedEventHandler(object sender, StatusChangedEventArgs e);
+   
     public delegate void UpdateClipboardCallback(System.Collections.Specialized.StringCollection paths);
 
-    class ChatServer
+    public partial class ChatServer
     {
+        //events
+        
+        public event Message StatusChanged;
+       
         // This hash table stores users and connections (browsable by user)
-        public static Hashtable htUsers = new Hashtable(30); // 30 users at one time limit
+        private Hashtable htUsers = new Hashtable(); 
         // This hash table stores connections and users (browsable by connection)
-        public static Hashtable htConnections = new Hashtable(30); // 30 users at one time limit
+        private Hashtable htConnections = new Hashtable(); 
         //Will store connections for screen sharing
-        public static Hashtable tcpClientsMonitor = new Hashtable(30);
-        public static Hashtable tcpClipboard = new Hashtable(30);
+        private Hashtable tcpClientsMonitor = new Hashtable();
+        private Hashtable tcpClipboard = new Hashtable();
         // Will store the IP address passed to it
         private IPAddress ipAddress;
-        private string passw;
-        private int porta, porta_scr, num_client = 0;
+        private int  porta_scr, num_client = 0;
         //private TcpClient tcpClient;
         // The event and its argument will notify the form when a user has connected, disconnected, send message, etc.
-        public static event StatusChangedEventHandler StatusChanged;
-        private static StatusChangedEventArgs e;
+        
 
         private TcpListener listenerMonitor;
         private TcpClient clientMonitor;
-        private MainForm mf;//alby4
-
+        
         // The constructor sets the IP address to the one retrieved by the instantiating object
-        public ChatServer(MainForm mf)
-        {
-            this.mf = mf;//alby4
+        public ChatServer()
+        {          
+            worker = new WorkerPool(this);
         }
 
         // The thread that will hold the connection listener
@@ -82,87 +67,56 @@ namespace Server
         // Will tell the while loop to keep monitoring for connections
         bool ServRunning = false;
 
-        //@dany modifiche
-        public void setServer(IPAddress address, string passw, string porta, int imgport)
-        {
-            ipAddress = address;
-            porta_scr = imgport;
-            this.passw = passw;
-            this.porta = int.Parse(porta);
-        }
+        
 
         // Add the user to the hash tables
-        public static void AddUser(TcpClient tcpUser, string strUsername)
+        public void AddUser(TcpClient tcpUser, string strUsername)
         {
             // First add the username and associated connection to both hash tables
-            ChatServer.htUsers.Add(strUsername, tcpUser);
-            ChatServer.htConnections.Add(tcpUser, strUsername);
+            htUsers.Add(strUsername, tcpUser);
+            htConnections.Add(tcpUser, strUsername);
 
             // Tell of the new connection to all other users and to the server form
             SendAdminMessage(htConnections[tcpUser] + " has joined us");
         }
 
         // Remove the user from the hash tables
-        public static void RemoveUser(TcpClient tcpUser)
+        public void RemoveUser(TcpClient tcpUser)
         {
             // If the user is there
             if (htConnections[tcpUser] != null)
             {
-                try
-                {
                     // Remove the user from the hash table
-                    ChatServer.htUsers.Remove(ChatServer.htConnections[tcpUser]);
+                    htUsers.Remove(htConnections[tcpUser]);
 
                     // First show the information and tell the other users about the disconnection
                     SendAdminMessage(htConnections[tcpUser] + " has left us");
 
-                    ChatServer.tcpClientsMonitor.Remove(ChatServer.htConnections[tcpUser]);
-                    ChatServer.tcpClipboard.Remove(ChatServer.htConnections[tcpUser]);
-                    ChatServer.htConnections.Remove(tcpUser);
-                }
-                catch
-                {
-                }
+                    tcpClientsMonitor.Remove(htConnections[tcpUser]);
+                    tcpClipboard.Remove(htConnections[tcpUser]);
+                    htConnections.Remove(tcpUser);
                
 
-                //alby5
-                if (MainForm.StartToolStripMenuItem.Enabled == false)
-                {
-                    MainForm.workerObject.RequestStop();
-                    MainForm.workerThread.Join(1000);
-                    MainForm.workerThread.Abort();
-                    MainForm.workerObject.RequestStart();
-                    MainForm.workerThread = new Thread(MainForm.workerObject.DoWork);
-                    MainForm.workerThread.Start();
-                }
-                //alby5 end
+               
             }
         }
 
-        // This is called when we want to raise the StatusChanged event
-        public static void OnStatusChanged(StatusChangedEventArgs e)
-        {
-            StatusChangedEventHandler statusHandler = StatusChanged;
-            if (statusHandler != null)
-            {
-                // Invoke the delegate
-                statusHandler(null, e);
-            }
-        }
+       
 
         // Send administrative messages
-        public static void SendAdminMessage(string Message)
+        public void SendAdminMessage(string Message)
         {
             StreamWriter swSenderSender;
 
             // First of all, show in our application who says what
-            e = new StatusChangedEventArgs("Administrator: " + Message);
-            OnStatusChanged(e);
+
+
+            StatusChanged("Administrator: " + Message);
 
             // Create an array of TCP clients, the size of the number of users we have
-            TcpClient[] tcpClients = new TcpClient[ChatServer.htUsers.Count];
+            TcpClient[] tcpClients = new TcpClient[htUsers.Count];
             // Copy the TcpClient objects into the array
-            ChatServer.htUsers.Values.CopyTo(tcpClients, 0);
+            htUsers.Values.CopyTo(tcpClients, 0);
             // Loop through the list of TCP clients
             for (int i = 0; i < tcpClients.Length; i++)
             {
@@ -188,18 +142,17 @@ namespace Server
         }
 
         // Send messages from one user to all the others
-        public void SendMessage(string From, string Message)
+        public void SendMessage(string From, string Message) 
         {
             StreamWriter swSenderSender;
 
             // First of all, show in our application who says what
-            e = new StatusChangedEventArgs(From + " says: " + Message);
-            OnStatusChanged(e);
+            StatusChanged(From + " says: " + Message);
 
             // Create an array of TCP clients, the size of the number of users we have
-            TcpClient[] tcpClients = new TcpClient[ChatServer.htUsers.Count];
+            TcpClient[] tcpClients = new TcpClient[htUsers.Count];
             // Copy the TcpClient objects into the array
-            ChatServer.htUsers.Values.CopyTo(tcpClients, 0);
+            htUsers.Values.CopyTo(tcpClients, 0);
             // Loop through the list of TCP clients
             for (int i = 0; i < tcpClients.Length; i++)
             {
@@ -225,24 +178,27 @@ namespace Server
             }
         }
 
-        public void setRunning()
+        private volatile bool _connected = false;
+        public  bool connected
         {
-            ServRunning = false;
-            //MessageBox.Show("Disabilitato servRunning!");
+            get
+            {
+                return _connected;
+            }
+
         }
-
-        public TcpListener StartListening()
+        public void StartListening()
         {
-
-            // Get the IP of the first network device, however this can prove unreliable on certain configurations
-            //IPAddress ipaLocal = ipAddress;
-
-            // Create the TCP listener object using the IP of the server and the specified port
-            
-            // ???????????? xkè???? funzionava....
-            //ipAddress = IPAddress.Any;//_________________________________________________________________________
-            tlsClient = new TcpListener(ipAddress, porta);
-
+            IPEndPoint[] tcpConnInfoArray = System.Net.NetworkInformation
+                    .IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners();
+            foreach (IPEndPoint endpoint in tcpConnInfoArray)
+                if (endpoint.Port == _port)
+                {
+                    throw new ArgumentException("Connection failed: the selected port is already used by the system");
+                    
+                }
+            tlsClient = new TcpListener(ipAddress, _port);
+            _connected = true;
             // Start the TCP listener and listen for connections
             tlsClient.Start();
 
@@ -255,8 +211,9 @@ namespace Server
             // Start the new tread that hosts the listener
             thrListener = new Thread(KeepListening);
             thrListener.Start();
-            
-            return tlsClient;
+          
+
+           
         }
 
         private void socketClipboard()
@@ -270,7 +227,7 @@ namespace Server
             TcpClient tcpClient;
             // While the server is running
             //alby loop!!!
-            while (true)
+            while (_connected)
             {
                 //MessageBox.Show("inizio keeplistening!");
                 // Accept a pending connection
@@ -278,66 +235,48 @@ namespace Server
                 {
                     tcpClient = tlsClient.AcceptTcpClient();
                     // Create a new instance of Connection
-                    Connection(tcpClient);
+                     //create an object ParameterizedThreadStart
+                    ParameterizedThreadStart thrSender = new ParameterizedThreadStart(AcceptClient);
+                    Thread thread = new Thread(thrSender);
+                    //start the new thread with the parameter needed
+                    thread.Start(tcpClient);
                 }
-                catch
+                catch (SocketException se)
                 {
-                    break;
+                    if (_connected)
+                        throw se; //TODO fix it
                 }
+                
             }
 
             // server is stopping, so delete all active users
-            RemoveAllUser();//alby2
+            RemoveAllUser();
             //MessageBox.Show("ho finito keeplistening!");
             //newConnection.setRunning();
         }
 
-        //alby2 - serve per la Disconnessione(menu->disconnetti)
-        public static void RemoveAllUser()
+        public  void RemoveAllUser()
         {
-            try
-            {
-                ChatServer.htUsers.Clear();
-                ChatServer.tcpClientsMonitor.Clear();
-                ChatServer.htConnections.Clear();
+          
+                htUsers.Clear();
+                tcpClientsMonitor.Clear();
+                htConnections.Clear();
                 tcpClipboard.Clear();
-            }
-            catch
-            {
-
-            }
+            
         }
 
-        // This class handels connections; there will be as many instances of it as there will be connected users
-        //TcpClient tcpClient;
-        // The thread that will send information to the client
-        /*private Thread thrSender;
-        private StreamReader srReceiver;
-        private StreamWriter swSender;
-        private string currUser;
-        private string strResponse;*/
-
-        // The constructor of the class takes in a TCP connection
-        public void Connection(TcpClient tcpCon)
-        {
-            // The thread that accepts the client and awaits messages
-            //thrSender = new Thread(AcceptClient);
-            // The thread calls the AcceptClient() method
-            //thrSender.Start();
-
-            //create an object ParameterizedThreadStart
-            ParameterizedThreadStart thrSender = new ParameterizedThreadStart(AcceptClient);
-            Thread thread = new Thread(thrSender);
-            //start the new thread with the parameter needed
-            thread.Start(tcpCon);
-        }
+        
+       
+           
 
         public void CloseConnection(TcpClient tcpClient, StreamReader srReceiver, StreamWriter swSender)
         {
             // Close the currently open objects
+            _connected = false;
             tcpClient.Close();
             srReceiver.Close();
             swSender.Close();
+            
         }
 
         //@dany modifiche
@@ -351,7 +290,7 @@ namespace Server
             StreamWriter swSender = new System.IO.StreamWriter(tcpClient.GetStream());
 
             MD5 md5 = new MD5CryptoServiceProvider();
-            string passmd5 = BitConverter.ToString(md5.ComputeHash(ASCIIEncoding.Default.GetBytes(passw)));
+            string passmd5 = BitConverter.ToString(md5.ComputeHash(ASCIIEncoding.Default.GetBytes(_psw)));
 
             // Read the account information from the client
             string currUser = srReceiver.ReadLine();
@@ -367,7 +306,7 @@ namespace Server
                     return;
                 }
                 // Store the user name in the hash table
-                if (ChatServer.htUsers.Contains(currUser) == true)
+                if (htUsers.Contains(currUser) == true)
                 {
                     // 0 means not connected
                     swSender.WriteLine("0|This username already exists.");
@@ -404,7 +343,7 @@ namespace Server
 
                     num_client++;
                     // Add the user to the hash tables and start listening for messages from him
-                    ChatServer.AddUser(tcpClient, currUser);
+                    AddUser(tcpClient, currUser);
                     //lister for connections to screen share
                     AcceptMonitor(currUser);
                     AcceptClipboard(currUser);
@@ -428,7 +367,7 @@ namespace Server
                             // If it's invalid, remove the user
                             if (strResponse == null)
                             {
-                                ChatServer.RemoveUser(tcpClient);
+                                RemoveUser(tcpClient);
                                 num_client--;
                                 //MessageBox.Show("rimosso utente!");
                             }
@@ -450,12 +389,12 @@ namespace Server
             catch
             {
                 // If anything went wrong with this user, disconnect him
-                ChatServer.RemoveUser(tcpClient);
+                RemoveUser(tcpClient);
                 num_client--;
             }
             if (finito == true)
             {
-                ChatServer.RemoveUser(tcpClient);
+                RemoveUser(tcpClient);
                 num_client--;
             }
             //MessageBox.Show("ads chiudo connessione!");
@@ -479,61 +418,52 @@ namespace Server
 
         public void socketforMonitor()
         {
-            try
-            {
-                listenerMonitor = new TcpListener(ipAddress, porta_scr);
+            
+                listenerMonitor = new TcpListener(ipAddress, 0);
                 listenerMonitor.Start();
-            }
-            catch { }
+                porta_scr = ((IPEndPoint)listenerMonitor.LocalEndpoint).Port;
+             
         }
 
         public void AcceptMonitor(string currUser)
         {
-            try
-            {
+         
                 clientMonitor = listenerMonitor.AcceptTcpClient();
                 tcpClientsMonitor.Add(currUser, clientMonitor);
-            }
-            catch { }
+           
         }
 
 
         //prende un Bitmap e invia al client in formato serializzato
-        public static void  Send(Bitmap diff)
+        public void SendImmage(Object input)
         {
+
+            ImageMessage diff = (ImageMessage)input;
             IFormatter formatter = new BinaryFormatter();
 
             // Create an array of TCP clients, the size of the number of users we have
-            TcpClient[] tcpClientM = new TcpClient[ChatServer.tcpClientsMonitor.Count];
+            TcpClient[] tcpClientM = new TcpClient[tcpClientsMonitor.Count];
             // Copy the TcpClient objects into the array
-            ChatServer.tcpClientsMonitor.Values.CopyTo(tcpClientM, 0);
+            tcpClientsMonitor.Values.CopyTo(tcpClientM, 0);
             // Loop through the list of TCP clients
             for (int i = 0; i < tcpClientM.Length; i++)
             {
-                //alby
-                try
-                {
-                    NetworkStream stream1 = tcpClientM[i].GetStream();
-                    formatter.Serialize(stream1, diff);
-                }
-                catch (Exception e)
-                {
-                    //MessageBox.Show(e.ToString());
-                }
-                //alby end
+                NetworkStream stream1 = tcpClientM[i].GetStream();
+                formatter.Serialize(stream1, diff);
+                
+               
             }
 
         }
 
         public void SendClipboard(string text)
         {
-            TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-            ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
+            TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+            tcpClipboard.Values.CopyTo(tcpClients, 0);
             for (int i = 0; i < tcpClients.Length; i++)
             {
                 // Try sending a message to each
-                try
-                {
+               
                     // If the message is blank or the connection is null, break out
                     if (tcpClients[i] == null)
                     {
@@ -547,12 +477,7 @@ namespace Server
                     Byte[] sendBytes = Encoding.ASCII.GetBytes(text);
                     NetworkStream sendstr = tcpClients[i].GetStream();
                     sendstr.Write(sendBytes, 0, sendBytes.Length);
-                }
-                catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
-                {
-                    //MessageBox.Show(ex.ToString());
-                    continue;
-                }
+                
             }
             SendAdminMessage("server just shared his clipboard containing text with us!");
         }
@@ -571,14 +496,13 @@ namespace Server
 
              while (ServRunning==true)
              {
-                try
-                {
                     string what = str.ReadLine();
                     user_sharing = what.Substring(4);
                     if (what.Substring(0, 4).Equals("File")) //someone is sharing a file-clopboard
                     {
-                        string Reason = "Receving Clipboard...";
-                        mf.Invoke(new DisableClipboardCallback(mf.disableClipboard), new object[] { Reason });
+                        ChangeClipbordStatus("Receving Clipboard...",false);
+
+                       
                         user_sharing = what.Substring(5);
                         paths.Clear();
                         string qta = what.Substring(4, 1);
@@ -599,15 +523,13 @@ namespace Server
                             paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);
 
                             //send file to others users
-                            TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-                            String[] users = new String[ChatServer.htUsers.Count];
-                            ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
-                            ChatServer.htUsers.Keys.CopyTo(users, 0);
+                            TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+                            String[] users = new String[htUsers.Count];
+                            tcpClipboard.Values.CopyTo(tcpClients, 0);
+                            htUsers.Keys.CopyTo(users, 0);
                             for (int i = 0; i < tcpClients.Length; i++)
                             {
                                 // Try sending a message to each
-                                try
-                                {
                                     // If the message is blank or the connection is null, break out
                                     if (tcpClients[i] == null || user_sharing == users[i])
                                     {
@@ -622,12 +544,8 @@ namespace Server
                                     sw.WriteLine(Convert.ToBase64String(clientData));
                                     sw.Flush();
                                     sw = null;
-                                }
-                                catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
-                                {
-                                    //MessageBox.Show(ex.ToString());
-                                    continue;
-                                }
+                                
+                                
                             }
                         }
                         if (abort == false)
@@ -636,18 +554,16 @@ namespace Server
                                 SendAdminMessage(user_sharing + " just shared his clipboard containing a file with us!");
                             else
                                 SendAdminMessage(user_sharing + " just shared his clipboard containing some files with us!");
-                            mf.Invoke(new UpdateClipboardCallback(UpdateClipboard), new object[] { paths });
+                            UpdateClipboard( paths);
                         }
-                        Reason = "Share Clipboard";
-                        mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
-                        //mf.enableClipboard();
-                        //MessageBox.Show("file ricevuto!!"+paths.ToString());
+                        ChangeClipbordStatus("Share Clipboard",false);
+                       
                         
                     }
                     else if (what.Substring(0, 4).Equals("Text"))
                     {
-                        string Reason = "Receving Clipboard...";
-                        mf.Invoke(new DisableClipboardCallback(mf.disableClipboard), new object[] { Reason });
+                        ChangeClipbordStatus("Receving Clipboard...", false);
+                      
 
                         byte[] bytes = new byte[s.ReceiveBufferSize];
 
@@ -657,16 +573,14 @@ namespace Server
                         string textcrc = Encoding.ASCII.GetString(bytes);
                         text = TrimFromZero(textcrc);
                         //text = str.ReadLine();
-                        TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-                        String[] users = new String[ChatServer.htUsers.Count];
-                        ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
-                        ChatServer.htUsers.Keys.CopyTo(users, 0);
+                        TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+                        String[] users = new String[htUsers.Count];
+                        tcpClipboard.Values.CopyTo(tcpClients, 0);
+                        htUsers.Keys.CopyTo(users, 0);
                         for (int i = 0; i < tcpClients.Length; i++)
                         {
                             // Try sending a message to each
-                            try
-                            {
-                                // If the message is blank or the connection is null, break out
+                            // If the message is blank or the connection is null, break out
                                 if (tcpClients[i] == null || user_sharing == users[i])
                                 {
                                     continue;
@@ -681,39 +595,31 @@ namespace Server
                                 NetworkStream sendstr = tcpClients[i].GetStream();
                                 Byte[] sendBytes = Encoding.ASCII.GetBytes(text);
                                 sendstr.Write(sendBytes, 0, sendBytes.Length);
-                            }
-                            catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
-                            {
-                                //MessageBox.Show(ex.ToString());
-                                continue;
-                            }
+                            
+                           
                         }
 
                         IDataObject ido = new DataObject();
                         ido.SetData(text);
                         Clipboard.SetDataObject(ido, true);
-                        Reason = "Share Clipboard";
-                        mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
+                        ChangeClipbordStatus("Share Clipboard", true);
                         SendAdminMessage(user_sharing + " just shared his clipboard containing text with us!");
                     }
                     else if (what.Substring(0, 4).Equals("Imag"))
                     {
-                        string Reason = "Receving Clipboard...";
-                        mf.Invoke(new DisableClipboardCallback(mf.disableClipboard), new object[] { Reason });
+                        ChangeClipbordStatus("Receving Clipboard...", false);
 
                         Stream stm = s.GetStream();
                         IFormatter formatter = new BinaryFormatter();
                         Bitmap bitm = (Bitmap)formatter.Deserialize(stm);
 
-                        TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-                        String[] users = new String[ChatServer.htUsers.Count];
-                        ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
-                        ChatServer.htUsers.Keys.CopyTo(users, 0);
+                        TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+                        String[] users = new String[htUsers.Count];
+                        tcpClipboard.Values.CopyTo(tcpClients, 0);
+                        htUsers.Keys.CopyTo(users, 0);
                         for (int i = 0; i < tcpClients.Length; i++)
                         {
                             // Try sending a message to each
-                            try
-                            {
                                 // If the message is blank or the connection is null, break out
                                 if (tcpClients[i] == null || user_sharing == users[i])
                                 {
@@ -729,35 +635,23 @@ namespace Server
                                 IFormatter myformat = new BinaryFormatter();
                                 myformat.Serialize(sendstr, bitm);
 
-                            }
-                            catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
-                            {
-                                //MessageBox.Show(ex.ToString());
-                                continue;
-                            }
+                            
+                            
                         }
                         Clipboard.SetImage(bitm);
-                        Reason = "Share Clipboard";
-                        mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
+                        ChangeClipbordStatus("Shared Clipboard", true);
                         SendAdminMessage(user_sharing + " just shared his clipboard containing an image with us!");
                     }
-                }
-                catch (Exception e)
-                {
-                    //MessageBox.Show(e.ToString());
-                    break;
-                }
-                //string sss = "ciao";
-                //Clipboard.SetDataObject(Encoding.ASCII.GetBytes(sss));
+                
+             
             }
         }
-
-        private static void UpdateClipboard(System.Collections.Specialized.StringCollection paths)
+        private void UpdateClipboard(System.Collections.Specialized.StringCollection paths)
         {
-            //System.Collections.Specialized.StringCollection paths = new System.Collections.Specialized.StringCollection();
-            //paths.Add(Path.GetFullPath(@".\") + fileName);
+
             Clipboard.SetFileDropList(paths);
         }
+       
 
         private string TrimFromZero(string input)
         {
@@ -775,11 +669,10 @@ namespace Server
             object fromClipboard = f.GetData(DataFormats.FileDrop, true);
             foreach (string sourceFileName in (Array)fromClipboard)
                 qta++;
-            TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-            ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
-
-            string Reason = "Sharing Clipboard...";
-            mf.Invoke(new DisableClipboardCallback(mf.disableClipboard), new object[] { Reason });
+            TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+            tcpClipboard.Values.CopyTo(tcpClients, 0);
+            ChangeClipbordStatus("Sharing Clipboard...", false);
+          
             
             for (int i = 0; i < tcpClients.Length; i++)
             {
@@ -806,46 +699,35 @@ namespace Server
                             fileNameByte.CopyTo(clientData, 4);
                             fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                             // Send the message to the current user in the loop
-                            try
-                            {
+                           
                                 sw.WriteLine("File: " + Path.GetFileName(sourceFileName));
                                 sw.Flush();
                                 sw.WriteLine(Convert.ToBase64String(clientData));
                                 sw.Flush();
-                            }
-                            catch
-                            {
-                                Reason = "Share Clipboard";
-                                mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
-                                return;
-                            }
+                            
                         }
                         catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
                         {
-                            System.Windows.Forms.MessageBox.Show("Sharing failed: it's impossible to copy a directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Reason = "Share Clipboard";
-                            mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
-                            sw.WriteLine("Abort");
-                            sw.Flush();
-                            return;
+                            throw new TransferException("Sharing failed: it's impossible to copy a directory\n" + ex.Message);                          
+                            
                         }
                     }
                     sw = null;
                 }
                 catch (Exception ex)
                 {
-                    // In caso di errori di rete
-                    Reason = "Share Clipboard";
-                    mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
-                    return;
+                    string res="Share Clipboard error\n" + ex.Message;
+                    ChangeClipbordStatus(res, false);
+                    throw new TransferException(res);
                 }
             }
             if (qta==1)
                 SendAdminMessage("server just shared his clipboard containing a file with us!");
             else
                 SendAdminMessage("server just shared his clipboard containing some files with us!");
-            Reason = "Share Clipboard";
-            mf.Invoke(new DisableClipboardCallback(mf.enableClipboard), new object[] { Reason });
+            ChangeClipbordStatus("Share Clipboard",true);
+         
+             
         }
 
         public void closeClip()
@@ -855,15 +737,14 @@ namespace Server
 
         public void SendClipboardBitmap(Bitmap bitm)
         {
-             TcpClient[] tcpClients = new TcpClient[ChatServer.tcpClipboard.Count];
-             String[] users = new String[ChatServer.htUsers.Count];
-             ChatServer.tcpClipboard.Values.CopyTo(tcpClients, 0);
-             ChatServer.htUsers.Keys.CopyTo(users, 0);
+             TcpClient[] tcpClients = new TcpClient[tcpClipboard.Count];
+             String[] users = new String[htUsers.Count];
+             tcpClipboard.Values.CopyTo(tcpClients, 0);
+             htUsers.Keys.CopyTo(users, 0);
              for (int i = 0; i < tcpClients.Length; i++)
              {
                 // Try sending a message to each
-                try
-                {
+                
                 // If the message is blank or the connection is null, break out
                 if (tcpClients[i] == null)
                     {
@@ -878,13 +759,7 @@ namespace Server
 
                 IFormatter myformat = new BinaryFormatter();
                 myformat.Serialize(sendstr, bitm);
-
-                }
-                catch (Exception ex)// If there was a problem, the user is not there anymore, remove him
-                {
-                    //MessageBox.Show(ex.ToString());
-                    continue;
-                }
+ 
              }
              SendAdminMessage("server just shared his clipboard containing an image with us!");
         }

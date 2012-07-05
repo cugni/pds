@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
+using Shared.Message;
 
 public class SocketforClient
 {
@@ -21,26 +22,11 @@ public class SocketforClient
 
     //Riceve dal server una serie di Bytes e li trasforma in una Bitmap
     //alby
-    public bool Receive(ref Bitmap bitm)
+    public ImageMessage Receive ()
     {
-        if (socket.GetStream().DataAvailable)
-        {
-            cont = 0;
-            Stream stm = socket.GetStream();
-            IFormatter formatter = new BinaryFormatter();
-            bitm = (Bitmap)formatter.Deserialize(stm);
-            return true;
-        }
-        else
-        {
-            if (cont >= 15)
-            {
-                bitm = new Bitmap(Screen.PrimaryScreen.Bounds.Height, Screen.PrimaryScreen.Bounds.Width);
-                return false;
-            }
-            cont++;
-            return true;
-        }
+        Stream stm = socket.GetStream();
+        IFormatter formatter = new BinaryFormatter();
+        return (ImageMessage)formatter.Deserialize(stm);
     }
 
 

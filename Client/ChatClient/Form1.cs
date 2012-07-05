@@ -13,11 +13,13 @@ using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Shared.Message;
+using System.Drawing.Imaging;
 
 
 namespace ChatClient
 {
-    public delegate void aggiornaPicture(Bitmap btmp, bool ret);
+    public delegate void aggiornaPicture(ImageMessage btmp);
     public partial class Form1 : Form
     {
         // Dati 
@@ -52,18 +54,36 @@ namespace ChatClient
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool ChangeClipboardChain(IntPtr hWndRemove,IntPtr hWndNewNext);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)] public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
-
+        [DllImport("user32.dll", CharSet = CharSet.Auto)] 
+        public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        public static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
         IntPtr nextClipboardViewer;
 
-        public void change(Bitmap p, bool ret)
+        public void change(ImageMessage p)
         {
             if (!workerObject.isStopped())
             {
-                pictureBox1.Image = p;
+                if (p != null) { label1.Visible = false; pictureBox1.BackColor = Color.Beige; }
+                else { if (record_showing == true)label1.Visible = true; pictureBox1.BackColor = Color.Black; return; }
+
+                if (pictureBox1.Image == null||!((Bitmap)pictureBox1.Image).Size.Equals(p.total_img_size.Size))
+                {
+                    pictureBox1.Image = new Bitmap(p.total_img_size.Width, p.total_img_size.Height);
+
+                }
+                
+                BitmapData wdata=((Bitmap)pictureBox1.Image).LockBits(p.img_size,System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                    p.bitmap.PixelFormat);
+                BitmapData rdata = p.bitmap.LockBits(p.img_size, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                    p.bitmap.PixelFormat);
+
+                memcpy(wdata.Scan0, rdata.Scan0, rdata.Height * rdata.Width * 4);
+                ((Bitmap)pictureBox1.Image).UnlockBits(wdata);
+                p.bitmap.UnlockBits(rdata);
                 pictureBox1.Refresh();
-                if (ret) { label1.Visible = false; pictureBox1.BackColor = Color.Beige; }
-                else { if(record_showing==true)label1.Visible = true; pictureBox1.BackColor = Color.Black; }//alby10
+                
+                
             }
         } 
 
@@ -73,6 +93,7 @@ namespace ChatClient
             // On application exit, don't forget to disconnect first
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
             InitializeComponent();
+            
         }
 
         // The event handler for application exit
@@ -104,23 +125,10 @@ namespace ChatClient
         //@dany modifiche
         private void InitializeConnection()
         {
-            // Parse the IP address from the TextBox into an IPAddress object
-            //ipAddr = IPAddress.Parse(txtIp.Text);
-            //ipAddr = IPAddress.Loopback;
-            // Start a new TCP connections to the chat server
+            
             MD5 md5 = new MD5CryptoServiceProvider();
             string passmd5 = BitConverter.ToString(md5.ComputeHash(ASCIIEncoding.Default.GetBytes(passw)));
-
-            // check if the port choosen by the user is free
-            /*  NON FUNZIONA IN LOCALE... DECOMMENTARE DOPO TEST!!!
-            IPEndPoint[] tcpConnInfoArray = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners();
-            foreach (IPEndPoint endpoint in tcpConnInfoArray)
-                if (endpoint.Port == port)
-                {
-                    System.Windows.Forms.MessageBox.Show("Connection failed: the selected port is already used by the system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            */
+ 
             tcpServer = new TcpClient();
             try
             {
@@ -148,17 +156,16 @@ namespace ChatClient
                 thrMessaging = new Thread(new ThreadStart(ReceiveMessages));
                 thrMessaging.Start();
             }
-            catch
+            catch (Exception e)
             {
                 //txtLog.AppendText("Error in connecting to server "+ipAddr.ToString()+" !\r\n\r\n");
-                MessageBox.Show("Errore durante la connessione!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Errore durante la connessione! \n"+e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 connectBtn.Text = "Connetti";
                 connectBtn.BackColor = DefaultBackColor;
             }
         }
 
-
-        //@dany modifiche
+         
         private void ReceiveMessages()
         {
             // Receive the response from the server
@@ -643,8 +650,7 @@ namespace ChatClient
 
             while (Connected==true)
             {
-                try
-                {
+                 
                     string what = str.ReadLine();
 
                     if (MessageBox.Show("E' stata condivisa una clipboard.\n Accettarla, sovrascrivendo la clipboard attuale?", "Clipboard condivisa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -710,13 +716,9 @@ namespace ChatClient
                         }
 
                     }
-                }
+                 
 
-                catch (Exception e)
-                {
-                    //MessageBox.Show(e.ToString());
-                    break;
-                }
+                 
             }
         }
 
@@ -813,7 +815,7 @@ namespace ChatClient
                     //this.Invoke(new DisableClipboardCallback(this.EnableClipboard), new object[] { Reason });
                     //this.Invoke(new DisableClipboardCallback(this.TextClipboard), new object[] { Reason });
                     // In caso di problemi sul server
-                    System.Windows.Forms.MessageBox.Show("Condivisione fallita: impossibie copiare una directory", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show("Condivisione fallita: impossibie copiare una directory\n"+ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     sw.WriteLine("Abort");
                     sw.Flush();
                 }
@@ -847,7 +849,7 @@ namespace ChatClient
                 }
                 catch (Exception ex)
                 {
-                    //MessageBox.Show(ex.ToString());
+                    MessageBox.Show(ex.ToString());
                     bntClipboard.Enabled = true;
                     bntClipboard.Text = "Condividendo Clipboard";
                     return;
@@ -878,7 +880,7 @@ namespace ChatClient
                 {
                     bntClipboard.Enabled = true;
                     bntClipboard.Text = "Condividi Clipboard";
-                    //MessageBox.Show(exc.ToString());
+                    MessageBox.Show(exc.ToString());
                     return;
                 }
                 bntClipboard.Enabled = true;

@@ -46,6 +46,7 @@
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(100, 20);
             this.txtPort.TabIndex = 4;
+            this.txtPort.Text = "2626";
             this.txtPort.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // txtPassw
@@ -55,6 +56,7 @@
             this.txtPassw.PasswordChar = '*';
             this.txtPassw.Size = new System.Drawing.Size(100, 20);
             this.txtPassw.TabIndex = 2;
+            this.txtPassw.Text = "password";
             this.txtPassw.TextChanged += new System.EventHandler(this.txtPassw_TextChanged);
             // 
             // txtUser
@@ -63,6 +65,7 @@
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(100, 20);
             this.txtUser.TabIndex = 1;
+            this.txtUser.Text = "clientUser";
             this.txtUser.TextChanged += new System.EventHandler(this.txtUser_TextChanged);
             // 
             // txtIp

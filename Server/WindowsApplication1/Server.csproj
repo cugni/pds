@@ -12,7 +12,7 @@
     <AssemblyName>WindowsApplication1</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -55,6 +55,8 @@
       <DependentUpon>Autenticazione.cs</DependentUpon>
     </Compile>
     <Compile Include="ChatServer.cs" />
+    <Compile Include="Workers.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="FrmSelezione.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,7 +76,7 @@
       <DependentUpon>Impostazioni.cs</DependentUpon>
     </Compile>
     <Compile Include="Win32Api.cs" />
-    <Compile Include="Worker.cs" />
+    <Compile Include="WorkerPool.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +119,7 @@
     </Compile>
     <None Include="app.config" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -132,6 +135,12 @@
     <Compile Include="Simulazione.Designer.cs">
       <DependentUpon>Simulazione.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{0D462B0C-71E2-46FB-8E0B-921D4DF2585C}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,31 +8,19 @@ using System.Runtime.InteropServices;
 
 //alby
 using System.Diagnostics;
+using Server.worker;
 
 namespace Server
 {
 
-    public delegate void DisableClipboardCallback(string Reason);
+  
 
     public partial class MainForm : Form
     {
-        private string nick, password;
-        private IPAddress addr;
-        private TcpListener tcpL;
-        private int imgport, index_addr;
-        private int porta;
-        private int flagVis;
-
-        private static int tipoCattura;//alby
+        
+        
         public Form af;
-        //alby
-        public static Worker workerObject;
-        public static Thread workerThread;
-        private static int w_s, h_s, x_s, y_s;
-        //alby end
-
-        private ChatServer mainServer;
-        public bool connected, first = true;//alby
+        public bool  first = true;//alby
         private delegate void UpdateStatusCallback(string strMessage);
 
         //alby
@@ -40,24 +28,15 @@ namespace Server
         public static Keys kend;
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
-        private static LowLevelKeyboardProc _proc = HookCallback;
-        private static IntPtr _hookID = IntPtr.Zero;
-
+        
 
         // The event handler for application exit
         public void OnApplicationExit(object sender, EventArgs e)
         {
-            try
-            {
-                if (endToolStripMenuItem.Enabled)
-                {
-                    workerObject.RequestStop();
-                    workerThread.Join();
-                }
-            }
-            catch { }
+
+            server.stop();
         }
-        //alby end
+       
 
         //for clipboard
         [DllImport("User32.dll")]
@@ -70,35 +49,26 @@ namespace Server
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         IntPtr nextClipboardViewer;
-
+        private ChatServer server;
+        
         public MainForm()
         {
             InitializeComponent();
+            server = new ChatServer();
             //this.Width = Screen.PrimaryScreen.Bounds.Width/ 3;
             //this.Height = Screen.PrimaryScreen.Bounds.Height / 4;
             nextClipboardViewer = (IntPtr)SetClipboardViewer((int)this.Handle);
             this.Left = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
             this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
-            this.setDimensioniParz(50, 50, 500, 500);
-
-            flagVis = 0;
-
-            //alby
-            tipoCattura = 1;
-            this.setDimensioniParz(50, 50, 500, 500);
-            this.setTasti(Keys.Up, Keys.Down);
-            _hookID = SetHook(_proc);
-            workerObject = new Worker(tipoCattura);
+           this.setTasti(Keys.Up, Keys.Down);
+            
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
-            //alby end
-
-            //alby2 
             this.AutoSize = true;
             this.MaximizeBox = false;
-            //this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
             this.FormBorderStyle = FormBorderStyle.Fixed3D;
-            //alby2 end
-
+            //register envets
+            server.ChangeClipbordStatus += changeClipboardStatus;
+           
         }
 
         //alby
@@ -108,7 +78,8 @@ namespace Server
             kend = end;
         }
 
-        public int getTipoCattura()
+
+        public CaptureType getTipoCattura()
         {
             return tipoCattura;
         }
@@ -119,141 +90,63 @@ namespace Server
 
             Autenticazione frm = (Autenticazione)sender;
 
-            if ((flagVis == 1) && (!frm.OpenFromOpzioni))
+            if (server.setted)
             {
                 StartToolStripMenuItem.Enabled = true;
                 endToolStripMenuItem.Enabled = false;
             }
         }
         //alby end
-
+        private CaptureType tipoCattura = CaptureType.FULL_SCREEN;
         void FormImpostazioni_FormClosed(object sender, FormClosedEventArgs e)
         {
             Impostazioni imp = (Impostazioni)sender;
             tipoCattura = imp.getTipoCattura();//alby
-            _hookID = SetHook(_proc);//alby5
         }
 
-        public bool setNick(string n)
-        {
-            if (string.IsNullOrEmpty(n))
-            {
-                MessageBox.Show("Insert a username!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-            nick = n;
-            return true;
-        }
-        public bool setPsw(string n)
-        {
-            if (string.IsNullOrEmpty(n))
-            {
-                MessageBox.Show("Insert a password!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-            password = n;
-            return true;
-        }
-        public bool setIp(string n)
-        {
-            try
-            {
-                addr = IPAddress.Parse(n);
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Insert a valid Ip address!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-        public bool setPort(string n)
-        {
-            try
-            {
-                porta = int.Parse(n);
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Insert a valid port!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
+       
 
-        public void setFlag()
-        {
-            flagVis = 1;
-        }
-
+      
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Chiusura server
-            if (connected)
+            if (server.connected)
             {
-                mainServer.setRunning();
-                tcpL.Stop();
-                mainServer.closeClip();
+                server.stop();
+               
+                server.closeClip();
             }
-            UnhookWindowsHookEx(_hookID);//alby
+
             this.Close();
         }
 
-        //alby3 start
-        public static void start()
+        public  void start()
         {
-            if (StartToolStripMenuItem.Enabled)
-            {
-                try
-                {
-                    workerObject.UpdateValuesOfScreen(x_s, y_s, w_s, h_s);
-                    workerObject.setTipoCattura(tipoCattura);
-                    workerObject.RequestStart();
-
-                    workerThread = new Thread(workerObject.DoWork);
-                    workerThread.Start();
-                    att();
-                    while (!workerThread.IsAlive) ;
-                    endToolStripMenuItem.Enabled = true;
-                    StartToolStripMenuItem.Enabled = false;
-
-                }
-                catch
-                {
-                    //MessageBox.Show("Attenzione!Impossibile attivare il comando start da questa finestra.");
-                }
-            }
-        }
-
-        //alby
-        private static void att()
-        {
+            server.start(tipoCattura);
+            endToolStripMenuItem.Enabled = true;
+            StartToolStripMenuItem.Enabled = false;
             label1.ForeColor = Color.Green;
             label1.Text = "CAPTURE: active";
         }
-        private static void dis()
-        {
-            label1.ForeColor = Color.Red;
-            label1.Text = "CAPTURE: disabled";
-        }
 
-        public static void end()
+     
+       
+      
+        public  void end()
         {
             if (endToolStripMenuItem.Enabled)
             {
-                try
-                {
-                    workerObject.RequestStop();
-                    //workerThread.Join();
+               
+                    server.stop();
+                   
+                 
                     endToolStripMenuItem.Enabled = false;
                     StartToolStripMenuItem.Enabled = true;
-                    dis();
+                    label1.ForeColor = Color.Red;
+                    label1.Text = "CAPTURE: disabled";
                 }
-                catch
-                {
-                    //MessageBox.Show("Attenzione!Impossibile attivare il comando end da questa finestra.");
-                }
-            }
+                
+            
         }
         //alby3 end
 
@@ -271,11 +164,11 @@ namespace Server
             end();
         }
 
-        //@dany modifiche
+       
         private void MainForm_Load(object sender, EventArgs e)
         {
             // Create a new instance of the ChatServer object
-            mainServer = new ChatServer(this);//alby4
+          
             //startListeningToolStripMenuItem.Text = "Start listening";
             btnSend.Enabled = false;
             txtMessage.Enabled = false;
@@ -283,78 +176,72 @@ namespace Server
             this.txtLog.ForeColor = System.Drawing.Color.Green;
             this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Italic);
             this.txtLog.Text = "To use the program you have to let clients connect to you.\r\nSelect File -> Connect, fill in the fields and click ok.\r\nOnce connected you can share your desktop through File -> Start Recording, if you want to change what to share, go to Options -> Recording Options\r\n\r\n";
-            //alby
             label1.Size = new System.Drawing.Size(15, 17);
-            dis();
+       
             label1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            //alby end
         }
 
-        //@dany modifiche
+    
         private void connettiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!connected)
+            if (!server.connected)
             {
-                if (first == true && flagVis == 0)
+                if (first == true && !server.setted)
                 {
                     //Apertura Autenticazione
-                    af = new Autenticazione(this, false);//alby
+                    af = new Autenticazione(server);
                     af.ShowDialog();
                     //utente preme annulla
-                    if (flagVis == 0)
+                   
+                    if (!server.setted)
                         return;
                 }
                 // check if the port choosen by the user is free
-                IPEndPoint[] tcpConnInfoArray = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners();
-                foreach (IPEndPoint endpoint in tcpConnInfoArray)
-                    if (endpoint.Port == porta)
-                    {
-                        System.Windows.Forms.MessageBox.Show("Connection failed: the selected port is already used by the system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                
 
-                //looks for a open port for screen sharing
-                for (imgport = 1300; (imgport < 65535) && (Array.Find(tcpConnInfoArray, ComparePort) != null); ++imgport)
-                {//do nothing
-                }
-                //MessageBox.Show("la porta " + imgport);
-                mainServer.setServer(addr, password, porta.ToString(), imgport);
+              
+               
+              
+
                 // Start listening for connections
-                tcpL = mainServer.StartListening();
+                try
+                {
+                  server.StartListening();
+                }
+                catch (ArgumentException ae)
+                {
+                        MessageBox.Show(ae.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+ 
+                }
                 //connettiMonitor();
                 if (first == true)
                 {
                     // Hook the StatusChanged event handler to mainServer_StatusChanged
-                    ChatServer.StatusChanged += new StatusChangedEventHandler(mainServer_StatusChanged);
-                    txtLog.Clear();
+                    server.StatusChanged += decoupleStatus;
                     first = false;
                 }
                 this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Regular);
                 //alby5
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
                 // Show that we started to listen for connections
                 txtLog.SelectionColor = Color.Red;
                 txtLog.AppendText("Monitoring for connections...\r\n\r\n");
                 connettiToolStripMenuItem.Text = "Disconnetti";
-                //alby
                 StartToolStripMenuItem.Enabled = true;
                 endToolStripMenuItem.Enabled = false;
-                dis();
-                //alby end
                 btnSend.Enabled = true;
                 txtMessage.Enabled = true;
-                connected = true;
+ 
             }
             else
             {
                 //alby
                 end();
 
-                mainServer.setRunning();
-                tcpL.Stop();
-                mainServer.closeClip();
+                server.stop();             
+                server.closeClip();
                 connettiToolStripMenuItem.Text = "Connetti";
                 //alby5
                 txtLog.SelectionColor = Color.Black;
@@ -367,44 +254,24 @@ namespace Server
                 txtMessage.Enabled = false;
                 StartToolStripMenuItem.Enabled = false;
                 endToolStripMenuItem.Enabled = false;
-                connected = false;
+                
 
-                //alby2
-                ChatServer.RemoveAllUser();
+                
             }
         }
 
-        //@dany modifiche
-        private bool ComparePort(IPEndPoint p)
-        {
-            if (p.Port == imgport)
-                return true;
-            else return false;
-        }
-
-        public void setDimensioniParz(int x, int y, int w, int h)
-        {
-            x_s = x;
-            y_s = y;
-            w_s = w;
-            h_s = h;
-        }
+        
+       
 
 
-        public Rectangle getRect()
-        {
-            return new Rectangle(x_s, y_s, w_s, h_s);
-        }
+       
 
         private void impostazioniToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UnhookWindowsHookEx(_hookID); //alby5
-
-            //alby5
             if (StartToolStripMenuItem.Enabled == false && endToolStripMenuItem.Enabled == true)
                 MessageBox.Show("Note: read-only options. To change the options first stop the current capture.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //Apertura impostazioni
-            Impostazioni iif = new Impostazioni(this);
+            Impostazioni iif = new Impostazioni(server);
             iif.Activate();
             iif.Show();
             //iif.setScreen(x_s,y_s,w_s,h_s);
@@ -430,10 +297,7 @@ namespace Server
         private void opzioniConnessioneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Apertura Autenticazione
-            if (flagVis == 0)
-                af = new Autenticazione(this, true);//alby
-            else
-                af = new Autenticazione(this, index_addr, password, porta.ToString(), true);//alby
+            af = new Autenticazione(server);//alby
             af.Activate();
             af.Show();
 
@@ -444,42 +308,21 @@ namespace Server
 
 
 
-        //________________________________________________________________________________________________
         public void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            mainServer.setRunning();
-            //alby
-            //if (connected)
-            try { tcpL.Stop(); }
-            catch { }
-            //startListeningToolStripMenuItem.Text = "Start listening";
-            //this.Close();
+            server.stop();
+           
         }
-        public void mainServer_StatusChanged(object sender, StatusChangedEventArgs e)
+        private void decoupleStatus(string msg)
         {
-            // Call the method that updates the form
-            try
-            {
-                this.Invoke(new UpdateStatusCallback(this.UpdateStatus), new object[] { e.EventMessage });
-            }
-            catch
-            {
-                //MessageBox.Show("Disconnessione!");
-            }
+            this.Invoke(new Message(UpdateStatus), msg);
         }
-
-        //@dany modifiche
         private void UpdateStatus(string strMessage)
         {
+            
             // Updates the log with the message
             string search = " says: ";
             int posizione = 0;
-            /*if (help == true)
-            {
-                txtLog.Clear();
-                txtLog.Text = testo;
-                help = false;
-            }*/
             if ((posizione = strMessage.IndexOf(search)) != -1)
             {
                 string user = strMessage.Substring(0, posizione);
@@ -515,7 +358,7 @@ namespace Server
             if (txtMessage.Lines.Length >= 1)
             {
                 //string fix = System.Text.RegularExpressions.Regex.Replace(txtMessage.Text, @"^\s*$\n", string.Empty, System.Text.RegularExpressions.RegexOptions.Multiline);
-                mainServer.SendMessage("Server", fix);
+                server.SendMessage("ChatServer", fix);
                 //txtMessage.Lines = null;
             }
             txtMessage.Clear();
@@ -530,33 +373,26 @@ namespace Server
                 txtMessage.Text = fix;
                 if (txtMessage.Lines.Length >= 1)
                 {
-                    mainServer.SendMessage("Server", fix);
+                    server.SendMessage("ChatServer", fix);
                 }
                 txtMessage.Clear();
             }
         }
 
 
-        public void setIndexAddr(int p)
-        {
-            index_addr = p;
-        }
+        
 
-        public void disableClipboard(string Reason)
+        private void changeClipboardStatus(string Reason,bool stat)
         {
-            bntClipboard.Enabled = false;
+            bntClipboard.Enabled = stat;
             bntClipboard.Text = Reason;
         }
 
-        public void enableClipboard(string Reason)
-        {
-            bntClipboard.Enabled = true;
-            bntClipboard.Text = Reason;
-        }
+     
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            string testo = "To use the program you have to connect to clients.\r\nSelect File -> connect, fill in the fields and click ok.\r\nOnce connected you can share your desktop to clients connected through File -> Start Recording, if you want to change what to share, go to Options -> Recording Options\r\n\r\n";
+            string testo = "To use the program you have to connect to clients.\r\nSelect File -> connect, fill in the fields and click ok.\r\nOnce  you can share your desktop to clients connected through File -> Start Recording, if you want to change what to share, go to Options -> Recording Options\r\n\r\n";
             //txtLog.Clear();
             this.txtLog.SelectionFont = new Font(txtLog.SelectionFont, FontStyle.Italic);
             txtLog.SelectionColor = Color.Green;
@@ -583,7 +419,7 @@ namespace Server
             switch (m.Msg)
             {
                 case WM_DRAWCLIPBOARD:
-                    if (connected == true)
+                    if (server.connected == true)
                     {
                         bntClipboard.Enabled = true;
                     }
@@ -612,12 +448,12 @@ namespace Server
             if (d.GetDataPresent(DataFormats.Text))  //invio testo
             {
                 strclip = (string)d.GetData(DataFormats.Text);
-                mainServer.SendClipboard(strclip);
+                server.SendClipboard(strclip);
             }
             else if (d.GetDataPresent(DataFormats.FileDrop, true))  //invio file
             {
                 //object fromClipboard = d.GetData(DataFormats.FileDrop, true);
-                ParameterizedThreadStart thrSendFile = new ParameterizedThreadStart(mainServer.SendClipboardFile);
+                ParameterizedThreadStart thrSendFile = new ParameterizedThreadStart(server.SendClipboardFile);
                 Thread thr1 = new Thread(thrSendFile);
                 thr1.Start(d);
                 //mainServer.SendClipboardFile(fromClipboard);
@@ -625,7 +461,7 @@ namespace Server
             else if (Clipboard.ContainsImage())
             {
                 Bitmap img = (Bitmap)Clipboard.GetImage();
-                mainServer.SendClipboardBitmap(img);
+                server.SendClipboardBitmap(img);
             }
         }
 
@@ -660,11 +496,11 @@ namespace Server
             FrmSelTasti f = new FrmSelTasti(this);
             f.Activate();
             f.Show();
-
-            f.FormClosed += new FormClosedEventHandler(FrmSelTasti_FormClosed);
+            //TODO check here
+        //    f.FormClosed += new FormClosedEventHandler(FrmSelTasti_FormClosed); 
         }
 
-        private static IntPtr SetHook(LowLevelKeyboardProc proc)
+        private  IntPtr SetHook(LowLevelKeyboardProc proc)
         {
             using (Process curProcess = Process.GetCurrentProcess())
             using (ProcessModule curModule = curProcess.MainModule)
@@ -673,37 +509,8 @@ namespace Server
             }
         }
 
-        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            try
-            {
-                if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
-                {
-                    int vkCode = Marshal.ReadInt32(lParam);
+        
 
-                    if (kstart == (Keys)vkCode && Keys.Control == Control.ModifierKeys)
-                    {
-                        //MessageBox.Show(kstart.ToString());
-                        start();
-
-                    }
-                    if ((Keys)vkCode == kend && Keys.Control == Control.ModifierKeys)
-                    {
-                        //MessageBox.Show(kend.ToString());
-                        end();
-                    }
-                }
-            }
-            catch { }
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
-        }
-
-        void FrmSelTasti_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            FrmSelTasti f = (FrmSelTasti)sender;
-            if (f.flag) { UnhookWindowsHookEx(_hookID); _hookID = SetHook(_proc); }
-
-        }
-        //alby end
+        
     }
 }

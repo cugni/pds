@@ -11,62 +11,54 @@ namespace Server
 {
     public partial class Autenticazione : Form
     {
-        public MainForm mf;
-        public bool OpenFromOpzioni;//alby
-
-        //alby
-        /*
-        public Autenticazione()
-        {
-            InitializeComponent();
-        }*/
-
-
-        //alby
-        public Autenticazione(MainForm m, bool flg)
+        private ChatServer server;
+       
+ 
+        public Autenticazione(ChatServer server)
         {
             InitializeComponent();
             setIpAddress();
-            mf = m;
-            OpenFromOpzioni = flg;
+            this.server = server;
+             
 
         }
 
-        //alby
-        public Autenticazione(MainForm m, int address, string pass, string port, bool flg)
+       
+        public Autenticazione(ChatServer server, int address, string pass, string port, bool flg)
         {
             InitializeComponent();
             setIpAddress();
-            mf = m;
+            this.server = server;
             txtpass.Text = pass;
             txtport.Text = port;
             txtIp.SelectedIndex = address;
-            OpenFromOpzioni = flg;
+          
 
         }
 
 
-        //@dany modifiche
+       
         private void button1_Click(object sender, EventArgs e)
         {
 
-            //alby4
-            //txtnick.Text = "alby";
-            //txtpass.Text = "ciao";
-            //txtport.Text = "1500";
-
-            
-            if (mf.setNick(txtnick.Text)==true && mf.setPsw(txtpass.Text)==true && mf.setPort(txtport.Text)==true)
-            {
-                if (txtIp.SelectedIndex == -1)
-                    MessageBox.Show("Select an ip address!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else
+             try{
+                server.nick=txtnick.Text;
+                server.password=txtpass.Text;
+                try
                 {
-                    mf.setIp(txtIp.SelectedItem.ToString());
-                    mf.setIndexAddr(txtIp.SelectedIndex);
-                    mf.setFlag();
-                    this.Close();
+                    server.port = int.Parse(txtport.Text);
                 }
+                catch (FormatException ) { throw new ArgumentException("Insert a valid port number"); };
+             
+            
+              if (txtIp.SelectedIndex == -1)throw new ArgumentException("Select an ip address!", "Error");
+               
+                    server.setIp(txtIp.SelectedItem.ToString());
+                    this.Close();
+               
+            
+            }catch(ArgumentException ae){
+                MessageBox.Show(ae.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
 
@@ -90,7 +82,7 @@ namespace Server
 
                 if (myIP.AddressFamily.ToString() == System.Net.Sockets.ProtocolFamily.InterNetwork.ToString())
                 {
-                    //MessageBox.Show(myIP.ToString());
+                     
                     txtIp.Items.Add(myIP.ToString());
                 }
             }
@@ -98,16 +90,11 @@ namespace Server
             txtIp.SelectedIndex = -1;
         }
 
-        private void Autenticazione_Load(object sender, EventArgs e)
+        private void txtnick_TextChanged(object sender, EventArgs e)
         {
-            this.Left = mf.Left;//alby
-            this.Top = mf.Top;//alby
 
-            //alby2 
-            this.AutoSize = true;
-            this.MaximizeBox = false;
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            //alby2 end
         }
+
+      
     }
 }

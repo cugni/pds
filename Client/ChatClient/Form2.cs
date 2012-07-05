@@ -48,11 +48,6 @@ namespace ChatClient
         private void button1_Click(object sender, EventArgs e)
         {
             
-            txtUser.Text = "mauro";
-            txtPassw.Text = "ciao";
-            txtPort.Text = "5000";
-            txtIp.Text = "192.168.56.1";
-
             if (formPrincipale.setNick(txtUser.Text) == true && formPrincipale.setPsw(txtPassw.Text) == true  &&  formPrincipale.setIp(txtIp.Text)==true && formPrincipale.setPort(txtPort.Text) == true )
             {
                     formPrincipale.setFlag();

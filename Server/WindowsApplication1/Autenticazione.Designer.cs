@@ -46,6 +46,7 @@ namespace Server
             this.txtpass.Name = "txtpass";
             this.txtpass.Size = new System.Drawing.Size(132, 20);
             this.txtpass.TabIndex = 2;
+            this.txtpass.Text = "password";
             this.txtpass.UseSystemPasswordChar = true;
             // 
             // txtport
@@ -54,6 +55,7 @@ namespace Server
             this.txtport.Name = "txtport";
             this.txtport.Size = new System.Drawing.Size(132, 20);
             this.txtport.TabIndex = 4;
+            this.txtport.Text = "2626";
             // 
             // label1
             // 
@@ -104,12 +106,12 @@ namespace Server
             // 
             // txtnick
             // 
-            this.txtnick.Enabled = false;
             this.txtnick.Location = new System.Drawing.Point(142, 31);
             this.txtnick.Name = "txtnick";
             this.txtnick.Size = new System.Drawing.Size(132, 20);
             this.txtnick.TabIndex = 1;
-            this.txtnick.Text = "(server)";
+            this.txtnick.Text = "serverUser";
+            this.txtnick.TextChanged += new System.EventHandler(this.txtnick_TextChanged);
             // 
             // label4
             // 
@@ -132,6 +134,7 @@ namespace Server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(414, 278);
             this.Controls.Add(this.txtIp);
             this.Controls.Add(this.label4);
@@ -143,9 +146,10 @@ namespace Server
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtport);
             this.Controls.Add(this.txtpass);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximizeBox = false;
             this.Name = "Autenticazione";
             this.Text = "Connection settings";
-            this.Load += new System.EventHandler(this.Autenticazione_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
