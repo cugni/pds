@@ -78,6 +78,7 @@ namespace Server
             htUsers.Add(strUsername, tcpUser);
             htConnections.Add(tcpUser, strUsername);
 
+            num_client++;
             // Tell of the new connection to all other users and to the server form
             SendAdminMessage(htConnections[tcpUser] + " has joined us");
         }
@@ -98,9 +99,7 @@ namespace Server
                     tcpClientsMonitor.Remove(htConnections[tcpUser]);
                     tcpClipboard.Remove(htConnections[tcpUser]);
                     htConnections.Remove(tcpUser);
-               
-
-               
+                                 
             }
         }
 
@@ -176,7 +175,7 @@ namespace Server
                 catch // If there was a problem, the user is not there anymore, remove him
                 {
                     RemoveUser(tcpClients[i]);
-                    num_client--;
+                    
                 }
             }
         }
@@ -345,7 +344,6 @@ namespace Server
                     swSender.WriteLine(porta_scr);
                     swSender.Flush();
 
-                    num_client++;
                     // Add the user to the hash tables and start listening for messages from him
                     AddUser(tcpClient, currUser);
                     //lister for connections to screen share
@@ -372,7 +370,6 @@ namespace Server
                             if (strResponse == null)
                             {
                                 RemoveUser(tcpClient);
-                                num_client--;
                                 //MessageBox.Show("rimosso utente!");
                             }
                             else
@@ -394,12 +391,12 @@ namespace Server
             {
                 // If anything went wrong with this user, disconnect him
                 RemoveUser(tcpClient);
-                num_client--;
+               
             }
             if (finito == true)
             {
                 RemoveUser(tcpClient);
-                num_client--;
+              
             }
             //MessageBox.Show("ads chiudo connessione!");
             CloseConnection(tcpClient, srReceiver, swSender);
