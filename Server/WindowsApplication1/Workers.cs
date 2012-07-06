@@ -50,7 +50,7 @@ namespace Server.worker{
        static extern int memcmp(IntPtr b1, IntPtr b2, int count);
        private bool isModifiedBitmap(Bitmap a)
         {
-            if (oldBitmap == null||!a.Size.Equals(oldBitmap))
+            if (oldBitmap == null||!a.Size.Equals(oldBitmap.Size))
             {
                 oldBitmap = a;
                 return true;
