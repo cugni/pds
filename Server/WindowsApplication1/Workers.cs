@@ -13,7 +13,7 @@ namespace Server.worker{
       
         protected  Point p;
         private  WorkerPool father;
-        private int nMilli=1000;
+        private int nMilli=200;
         protected Bitmap oldBitmap;
         protected static IntPtr m_HBitmap;
         protected Cursor cursor = Cursors.Arrow;

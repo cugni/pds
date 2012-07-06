@@ -36,9 +36,11 @@ namespace Server
         public event Message StatusChanged;
        
         // This hash table stores users and connections (browsable by user)
-        private Hashtable htUsers = Hashtable.Synchronized(new Hashtable()); 
+        private Hashtable htUsers = Hashtable.Synchronized(new Hashtable());
+      
         // This hash table stores connections and users (browsable by connection)
-        private Hashtable htConnections = Hashtable.Synchronized (new Hashtable()); 
+        private Hashtable htConnections = Hashtable.Synchronized (new Hashtable());
+        private ArrayList  threadList =ArrayList.Synchronized( new ArrayList ());
         //Will store connections for screen sharing
         private Hashtable tcpClientsMonitor = Hashtable.Synchronized (new Hashtable());
         private Hashtable tcpClipboard = Hashtable.Synchronized (new Hashtable());
@@ -59,7 +61,7 @@ namespace Server
         }
 
         // The threadListening that will hold the connection listener
-        private Thread thrListener;
+       
 
         // The TCP object that listens for connections
         private TcpListener tlsClient;
@@ -99,6 +101,7 @@ namespace Server
                     tcpClientsMonitor.Remove(htConnections[tcpUser]);
                     tcpClipboard.Remove(htConnections[tcpUser]);
                     htConnections.Remove(tcpUser);
+                    
                                  
             }
         }
@@ -211,8 +214,9 @@ namespace Server
             socketClipboard();
 
             // Start the new tread that hosts the listener
-            thrListener = new Thread(KeepListening);
+            Thread thrListener = new Thread(KeepListening);
             thrListener.Start();
+            threadList.Add(thrListener);
           
 
            
@@ -223,8 +227,9 @@ namespace Server
             ClipboardSocket = new TcpListener(ipAddress, 48231);
             ClipboardSocket.Start();
         }
-        private TcpClient tcpClient;
-        Thread threadListening;
+       
+       
+       
         private void KeepListening()
         {
             
@@ -236,13 +241,18 @@ namespace Server
                 // Accept a pending connection
                 try
                 {
+                    Thread threadListening;
+                    TcpClient tcpClient;
+                    ParameterizedThreadStart thrSender;
                     tcpClient = tlsClient.AcceptTcpClient();
+                  
                     // Create a new instance of Connection
                      //create an object ParameterizedThreadStart
-                    ParameterizedThreadStart thrSender = new ParameterizedThreadStart(AcceptClient);
-                     threadListening= new Thread(thrSender);
+                    thrSender = new ParameterizedThreadStart(AcceptClient);
+                    threadListening= new Thread(thrSender);
                     //start the new threadListening with the parameter needed
                     threadListening.Start(tcpClient);
+                    threadList.Add(threadListening);
                 }
                 catch (SocketException se)
                 {
@@ -257,15 +267,44 @@ namespace Server
             //MessageBox.Show("ho finito keeplistening!");
             //newConnection.setRunning();
         }
-        [MethodImpl(MethodImplOptions.Synchronized)]
+     //   [MethodImpl(MethodImplOptions.Synchronized)]
         public  void RemoveAllUser()
         {
-          
+            try
+            {
+                foreach (Thread tc in threadList)
+                {
+                    try
+                    {
+                        tc.Interrupt();
+                        tc.Abort();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+
+                }
+                foreach (TcpClient tc in htUsers)
+                {
+                    try
+                    {
+                        tc.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+
+                }
+
                 htUsers.Clear();
                 tcpClientsMonitor.Clear();
+
                 htConnections.Clear();
                 tcpClipboard.Clear();
-            
+            }
+            catch { }
         }
 
         
@@ -416,6 +455,7 @@ namespace Server
             clipthread.SetApartmentState(ApartmentState.STA);
             //start the new threadListening with the parameter needed
             clipthread.Start(my_tcp);
+            threadList.Add(clipthread);
         }
 
         public void socketforMonitor()
@@ -509,6 +549,7 @@ namespace Server
                  try
                  {
                       what = str.ReadLine();
+                      if (what == null) return;
                  }
                  catch (IOException)
                  {

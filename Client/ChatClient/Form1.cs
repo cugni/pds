@@ -111,7 +111,7 @@ namespace ChatClient
                 tcpServer.Close();
                 tcpClip.Close();
             }
-
+            
             workerObject.RequestStop();
             workerThread.Join();
         }
@@ -192,7 +192,7 @@ namespace ChatClient
                 workerObject = new Worker(this, pictureBox1, s);
                 workerThread = new Thread(workerObject.DoWork);
                 workerThread.Start();
-                while (!workerThread.IsAlive);
+               
                 
 
             }

@@ -36,11 +36,8 @@ namespace Server
         {
 
             worker.RequestStop();
-            try
-            {
-                threadListening.Abort();
-            }
-            catch { };
+            RemoveAllUser();
+            Environment.Exit(0);
             
         }
         public void start(CaptureType captureType)
