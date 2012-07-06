@@ -47,7 +47,7 @@ namespace ChatClient
                     //inizializzato la Form. Il parametro change serve per istanziare il delegate e verrà richiamato nel
                     //thread del form
                     f.Invoke(new aggiornaPicture(f.change), btmp);
-                }catch(){
+                }catch{
                     _shouldStop=true;
                     return;
                 }
