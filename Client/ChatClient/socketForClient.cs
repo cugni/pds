@@ -11,17 +11,16 @@ using Shared.Message;
 public class SocketforClient
 {
     TcpClient socket;
-    private double cont;//alby
-
+    private double cont;
     //Costruttore dell' oggetto socket utilizzato per la cattura del monitor
     public SocketforClient(string host, int port)
     {
         socket = new TcpClient(host, port);
-        cont = 0;//alby
+        cont = 0;
     }
 
     //Riceve dal server una serie di Bytes e li trasforma in una Bitmap
-    //alby
+ 
     public ImageMessage Receive ()
     {
         Stream stm = socket.GetStream();

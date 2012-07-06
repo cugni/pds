@@ -38,14 +38,19 @@ namespace ChatClient
 
             while (!_shouldStop)
             {
-                  
-                  ImageMessage btmp= s.Receive();
+                try
+                {
+
+                    ImageMessage btmp = s.Receive();
                     //La Invoke serve per poter effettuare operazioni di cross-thread, in questo caso
                     //devo modificare la pictureBox del Form da qui, che è un thread diverso rispetto a quello che ha
                     //inizializzato la Form. Il parametro change serve per istanziare il delegate e verrà richiamato nel
                     //thread del form
                     f.Invoke(new aggiornaPicture(f.change), btmp);
-
+                }catch(){
+                    _shouldStop=true;
+                    return;
+                }
                
             }
         }

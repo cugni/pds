@@ -112,17 +112,9 @@ namespace ChatClient
                 tcpClip.Close();
             }
 
-            //alby
-            try
-            {
-                workerObject.RequestStop();
-                workerThread.Join();
-            }
-            catch { }
-            //alby end
+            workerObject.RequestStop();
+            workerThread.Join();
         }
-
-        //@dany modifiche
         private void InitializeConnection()
         {
             

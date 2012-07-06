@@ -496,7 +496,21 @@ namespace Server
 
              while (ServRunning==true)
              {
-                    string what = str.ReadLine();
+                 string what;
+                 try
+                 {
+                      what = str.ReadLine();
+                 }
+                 catch (IOException)
+                 {
+                     return;
+                 }
+                    if (MessageBox.Show("E' stata condivisa una clipboard.\n Accettarla, sovrascrivendo la clipboard attuale?", "Clipboard condivisa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    {
+                        continue;
+ 
+                    }
+                   
                     user_sharing = what.Substring(4);
                     if (what.Substring(0, 4).Equals("File")) //someone is sharing a file-clopboard
                     {
@@ -517,7 +531,12 @@ namespace Server
                             abort = false;
                             string fileName = tmp.Substring(6);
                             byte[] clientData = Convert.FromBase64String(str.ReadLine());
-                            BinaryWriter bWrite = new BinaryWriter(File.Open(Path.GetFullPath(@".\File ricevuti\") + fileName, FileMode.Create));
+                            string frdir=Path.GetFullPath(@".\File ricevuti\");
+                            if (!System.IO.File.Exists(frdir))
+                            {
+                                System.IO.Directory.CreateDirectory(frdir);
+                            }
+                            BinaryWriter bWrite = new BinaryWriter(File.Open(frdir + fileName, FileMode.Create));
                             bWrite.Write(clientData, 4 + fileName.Length, clientData.Length - 4 - fileName.Length);
                             bWrite.Close();
                             paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);

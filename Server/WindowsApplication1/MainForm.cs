@@ -20,10 +20,8 @@ namespace Server
         
         
         public Form af;
-        public bool  first = true;//alby
+        public bool  first = true;
         private delegate void UpdateStatusCallback(string strMessage);
-
-        //alby
         public static Keys kstart;
         public static Keys kend;
         private const int WH_KEYBOARD_LL = 13;
@@ -55,12 +53,10 @@ namespace Server
         {
             InitializeComponent();
             server = new ChatServer();
-            //this.Width = Screen.PrimaryScreen.Bounds.Width/ 3;
-            //this.Height = Screen.PrimaryScreen.Bounds.Height / 4;
             nextClipboardViewer = (IntPtr)SetClipboardViewer((int)this.Handle);
             this.Left = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
             this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
-           this.setTasti(Keys.Up, Keys.Down);
+            this.setTasti(Keys.Up, Keys.Down);
             
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
             this.AutoSize = true;
