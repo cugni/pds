@@ -52,7 +52,7 @@ namespace Server
         
 
         private TcpListener listenerMonitor;
-        private TcpClient clientMonitor;
+       
         
         // The constructor sets the IP address to the one retrieved by the instantiating object
         public ChatServer()
@@ -468,7 +468,7 @@ namespace Server
         public void AcceptMonitor(string currUser)
         {
          
-                clientMonitor = listenerMonitor.AcceptTcpClient();
+                TcpClient clientMonitor = listenerMonitor.AcceptTcpClient();
                 tcpClientsMonitor.Add(currUser, clientMonitor);
            
         }
@@ -477,6 +477,8 @@ namespace Server
         //prende un Bitmap e invia al client in formato serializzato
         public void SendImmage(Object input)
         {
+            if (input == null)
+                throw new ArgumentException("Null argument");
 
             ImageMessage diff = (ImageMessage)input;
             IFormatter formatter = new BinaryFormatter();

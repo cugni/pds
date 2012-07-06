@@ -10,7 +10,7 @@ using Shared.Message;
 
 public class SocketforClient
 {
-    TcpClient socket;
+    public TcpClient socket;
     private double cont;
     //Costruttore dell' oggetto socket utilizzato per la cattura del monitor
     public SocketforClient(string host, int port)
@@ -19,15 +19,7 @@ public class SocketforClient
         cont = 0;
     }
 
-    //Riceve dal server una serie di Bytes e li trasforma in una Bitmap
- 
-    public ImageMessage Receive ()
-    {
-        Stream stm = socket.GetStream();
-        
-        IFormatter formatter = new BinaryFormatter();
-        return (ImageMessage)formatter.Deserialize(stm);
-    }
+     
 
 
 }

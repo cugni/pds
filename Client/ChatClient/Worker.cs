@@ -11,6 +11,9 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Runtime.InteropServices;
 using Shared.Message;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Net.Sockets;
 
 namespace ChatClient
 {
@@ -41,8 +44,18 @@ namespace ChatClient
             {
                 try
                 {
+                    NetworkStream stm = s.socket.GetStream();
+                    if (!stm.DataAvailable)
+                    {
+                        Thread.Sleep(1000); //TODO fix it
+                        continue;
+                        
+                    }
+                    IFormatter formatter = new BinaryFormatter();
 
-                    ImageMessage btmp = s.Receive();
+                    ImageMessage btmp =(ImageMessage)formatter.Deserialize(stm);
+
+                     
                     //La Invoke serve per poter effettuare operazioni di cross-thread, in questo caso
                     //devo modificare la pictureBox del Form da qui, che è un thread diverso rispetto a quello che ha
                     //inizializzato la Form. Il parametro change serve per istanziare il delegate e verrà richiamato nel
@@ -52,7 +65,7 @@ namespace ChatClient
                 catch (System.Runtime.Serialization.SerializationException es)
                 {
                     
-                    Console.WriteLine("--> " + ik);
+                    Console.WriteLine("--> " + ik+"--"+es.Message);
                     ik++;
                 }
                 catch (Exception e)
