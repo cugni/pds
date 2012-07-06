@@ -111,9 +111,14 @@ namespace ChatClient
                 tcpServer.Close();
                 tcpClip.Close();
             }
+
+            if (workerObject != null)
+                workerObject.RequestStop();
             
-            workerObject.RequestStop();
-            workerThread.Join();
+            if (workerThread != null)
+                workerThread.Join();
+
+
         }
         private void InitializeConnection()
         {
@@ -329,8 +334,8 @@ namespace ChatClient
                 
                 //MessageBox.Show("ciao");
             }
-
-            workerThread.Abort();
+            if (workerThread != null) 
+                workerThread.Abort();
             //MessageBox.Show("disconnetto");
             if (record_showing == true) label1.Visible = true;
             pictureBox1.BackColor = Color.Black;

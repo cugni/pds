@@ -24,6 +24,7 @@ public class SocketforClient
     public ImageMessage Receive ()
     {
         Stream stm = socket.GetStream();
+        
         IFormatter formatter = new BinaryFormatter();
         return (ImageMessage)formatter.Deserialize(stm);
     }

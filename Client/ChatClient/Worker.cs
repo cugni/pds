@@ -35,6 +35,7 @@ namespace ChatClient
 
         public void DoWork()
         {
+            int ik=0;
 
             while (!_shouldStop)
             {
@@ -47,8 +48,17 @@ namespace ChatClient
                     //inizializzato la Form. Il parametro change serve per istanziare il delegate e verrà richiamato nel
                     //thread del form
                     f.Invoke(new aggiornaPicture(f.change), btmp);
-                }catch{
-                    _shouldStop=true;
+                }
+                catch (System.Runtime.Serialization.SerializationException es)
+                {
+                    
+                    Console.WriteLine("--> " + ik);
+                    ik++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERRORE VIDEO: " + e.Message);
+                    _shouldStop = true;
                     return;
                 }
                
