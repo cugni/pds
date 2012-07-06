@@ -37,8 +37,14 @@ namespace Server
 
             worker.RequestStop();
             RemoveAllUser();
-            Environment.Exit(0);
-            
+                       
+        }
+        public void stopVideo()
+        {
+
+            worker.RequestStop();
+           
+
         }
         public void start(CaptureType captureType)
         {

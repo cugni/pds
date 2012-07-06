@@ -30,7 +30,7 @@ namespace Server.worker{
               while (!father._shouldStop){
                  
                   Bitmap bmpScreenshot =getBitmap();
-                  if (isModifiedBitmap(bmpScreenshot))
+                  if (isModifiedBitmap(bmpScreenshot)||true) //TODO remove, only debug
                   {
                       ImageMessage msg = new ImageMessage();
                       msg.bitmap = bmpScreenshot;

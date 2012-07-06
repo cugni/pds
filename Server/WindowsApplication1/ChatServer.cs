@@ -94,10 +94,8 @@ namespace Server
             {
                     // Remove the user from the hash table
                     htUsers.Remove(htConnections[tcpUser]);
-
                     // First show the information and tell the other users about the disconnection
                     SendAdminMessage(htConnections[tcpUser] + " has left us");
-
                     tcpClientsMonitor.Remove(htConnections[tcpUser]);
                     tcpClipboard.Remove(htConnections[tcpUser]);
                     htConnections.Remove(tcpUser);
@@ -484,20 +482,20 @@ namespace Server
             IFormatter formatter = new BinaryFormatter();
 
             // Create an array of TCP clients, the size of the number of users we have
-            TcpClient[] tcpClientM = new TcpClient[tcpClientsMonitor.Count];
-            // Copy the TcpClient objects into the array
-            tcpClientsMonitor.Values.CopyTo(tcpClientM, 0);
+
+            ArrayList tcps = new ArrayList(tcpClientsMonitor.Values);
             // Loop through the list of TCP clients
-            for (int i = 0; i < tcpClientM.Length; i++)
+            for (int i = 0; i < tcps.Count; i++)
             {
+                TcpClient t=(TcpClient)tcps[i];
                 try
                 {
-                    NetworkStream stream1 = tcpClientM[i].GetStream();
+                    NetworkStream stream1 = t.GetStream();
                     formatter.Serialize(stream1, diff);
                 }
                 catch
                 {//remove the tcpClient
-                    this.RemoveUser(tcpClientM[i]);
+                    this.RemoveUser(t);
 
                 }
                

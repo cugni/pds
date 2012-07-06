@@ -224,9 +224,7 @@ namespace ChatClient
                 catch
                 {
                     string Reason = "Disconnesso dal server!";
-                    //MessageBox.Show("Disconnessione!");
-                    //CloseConnection("Disconnected...");
-                    //btnConnect.Text = "Connect";
+                     
                     if (Connected)
                     {
                         this.Invoke(new CloseConnectionCallback(this.CloseConnection), new object[] { Reason });
@@ -235,8 +233,7 @@ namespace ChatClient
                         str.Close();
                         //bntClipboard.Enabled = false;
                     }
-                    // Close the objects
-                    //Connected = false;
+                    
                 }
             }
         }

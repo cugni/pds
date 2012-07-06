@@ -55,6 +55,7 @@
       <DependentUpon>Autenticazione.cs</DependentUpon>
     </Compile>
     <Compile Include="ChatServer.cs" />
+    <Compile Include="ClientConnection.cs" />
     <Compile Include="Workers.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="FrmSelezione.cs">

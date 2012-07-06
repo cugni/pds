@@ -131,10 +131,8 @@ namespace Server
         {
             if (endToolStripMenuItem.Enabled)
             {
-               
-                    server.stop();
-                   
-                 
+
+                server.stopVideo();
                     endToolStripMenuItem.Enabled = false;
                     StartToolStripMenuItem.Enabled = true;
                     label1.ForeColor = Color.Red;
