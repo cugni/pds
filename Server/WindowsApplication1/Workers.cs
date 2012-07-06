@@ -46,7 +46,7 @@ namespace Server.worker{
               }
         }
        protected abstract Bitmap getBitmap();
-       [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+       [DllImport("msvcrt.dll", CallingConvention = CallingConvention.StdCall)]
        static extern int memcmp(IntPtr b1, IntPtr b2, int count);
        private bool isModifiedBitmap(Bitmap a)
         {
@@ -57,8 +57,7 @@ namespace Server.worker{
             }
                 // Create a new bitmap.
                 // Lock the bitmap's bits. 
-            bool modified = false;
-
+                bool modified = false;
                 Rectangle rect = new Rectangle(0, 0, a.Width, a.Height);
                 BitmapData bmpData =
                     a.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
@@ -66,8 +65,9 @@ namespace Server.worker{
                 BitmapData old =
                          oldBitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
                          oldBitmap.PixelFormat);
-               
-                if (memcmp(bmpData.Scan0,old.Scan0, old.Height*old.Width*4) != 0)
+               int ret=memcmp(bmpData.Scan0,old.Scan0, old.Height*old.Width*4);
+               Console.WriteLine("===>"+ret);
+                if (ret != 0)
                     modified = true;
                 a.UnlockBits(bmpData);
                 oldBitmap.UnlockBits(old);
