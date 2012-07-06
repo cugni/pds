@@ -58,7 +58,7 @@ namespace Server
             worker = new WorkerPool(this);
         }
 
-        // The thread that will hold the connection listener
+        // The threadListening that will hold the connection listener
         private Thread thrListener;
 
         // The TCP object that listens for connections
@@ -223,10 +223,11 @@ namespace Server
             ClipboardSocket = new TcpListener(ipAddress, 48231);
             ClipboardSocket.Start();
         }
-
+        private TcpClient tcpClient;
+        Thread threadListening;
         private void KeepListening()
         {
-            TcpClient tcpClient;
+            
             // While the server is running
             
             while (_connected)
@@ -239,9 +240,9 @@ namespace Server
                     // Create a new instance of Connection
                      //create an object ParameterizedThreadStart
                     ParameterizedThreadStart thrSender = new ParameterizedThreadStart(AcceptClient);
-                    Thread thread = new Thread(thrSender);
-                    //start the new thread with the parameter needed
-                    thread.Start(tcpClient);
+                     threadListening= new Thread(thrSender);
+                    //start the new threadListening with the parameter needed
+                    threadListening.Start(tcpClient);
                 }
                 catch (SocketException se)
                 {
@@ -413,7 +414,7 @@ namespace Server
             ParameterizedThreadStart threadSender = new ParameterizedThreadStart(ReceiveFile);
             Thread clipthread = new Thread(threadSender);
             clipthread.SetApartmentState(ApartmentState.STA);
-            //start the new thread with the parameter needed
+            //start the new threadListening with the parameter needed
             clipthread.Start(my_tcp);
         }
 

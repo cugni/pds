@@ -47,7 +47,7 @@ namespace Server.Properties {
         }
         
         /// <summary>
-        ///   Esegue l'override della proprietà CurrentUICulture del thread corrente per tutte le
+        ///   Esegue l'override della proprietà CurrentUICulture del threadListening corrente per tutte le
         ///   ricerche di risorse eseguite utilizzando questa classe di risorse fortemente tipizzata.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]

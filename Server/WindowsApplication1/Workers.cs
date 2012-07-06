@@ -181,7 +181,7 @@ namespace Server.worker{
             pen.Width = 2.0F;
            
         }
-           // This method will be called when the thread is started.
+           // This method will be called when the threadListening is started.
          protected override Bitmap getBitmap()   {
 
            

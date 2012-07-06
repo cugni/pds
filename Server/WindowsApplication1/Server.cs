@@ -36,6 +36,11 @@ namespace Server
         {
 
             worker.RequestStop();
+            try
+            {
+                threadListening.Abort();
+            }
+            catch { };
             
         }
         public void start(CaptureType captureType)
