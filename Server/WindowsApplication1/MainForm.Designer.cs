@@ -1,3 +1,4 @@
+using System.Drawing;
 namespace Server
 {
     partial class MainForm
