@@ -171,7 +171,7 @@ namespace ChatClient
                 this.Invoke(new UpdateLogCallback(this.UpdateLog), new object[] { "Connected Successfully!" });
                 //if there is data in the clipboard, enable the button to send it
                 IDataObject d = Clipboard.GetDataObject();
-                if (d!=null && (d.GetDataPresent(DataFormats.Text) || d.GetDataPresent(DataFormats.Text)))
+                if (d!=null &&  d.GetDataPresent(DataFormats.Text))
                     bntClipboard.Enabled = true;
                 // read the port sent by the server for screen sharing
                 port_scr=int.Parse(srReceiver.ReadLine());
