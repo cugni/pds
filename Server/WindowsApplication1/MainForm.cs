@@ -380,9 +380,16 @@ namespace Server
         }
 
 
-        
 
-        private void changeClipboardStatus(string Reason,bool stat)
+
+        private delegate void clip(String readon, bool stat);
+        private void changeClipboardStatus(string Reason, bool stat)
+        {
+            this.Invoke(new clip(changeClipboardStatusDelegate), Reason, stat);
+        }
+
+
+        private void changeClipboardStatusDelegate(string Reason, bool stat)
         {
             bntClipboard.Enabled = stat;
             bntClipboard.Text = Reason;
