@@ -13,6 +13,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Server.worker;
 using Shared.Message;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -35,12 +36,12 @@ namespace Server
         public event Message StatusChanged;
        
         // This hash table stores users and connections (browsable by user)
-        private Hashtable htUsers = new Hashtable(); 
+        private Hashtable htUsers = Hashtable.Synchronized(new Hashtable()); 
         // This hash table stores connections and users (browsable by connection)
-        private Hashtable htConnections = new Hashtable(); 
+        private Hashtable htConnections = Hashtable.Synchronized (new Hashtable()); 
         //Will store connections for screen sharing
-        private Hashtable tcpClientsMonitor = new Hashtable();
-        private Hashtable tcpClipboard = new Hashtable();
+        private Hashtable tcpClientsMonitor = Hashtable.Synchronized (new Hashtable());
+        private Hashtable tcpClipboard = Hashtable.Synchronized (new Hashtable());
         // Will store the IP address passed to it
         private IPAddress ipAddress;
         private int  porta_scr, num_client = 0;
@@ -70,6 +71,7 @@ namespace Server
         
 
         // Add the user to the hash tables
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void AddUser(TcpClient tcpUser, string strUsername)
         {
             // First add the username and associated connection to both hash tables
@@ -81,6 +83,7 @@ namespace Server
         }
 
         // Remove the user from the hash tables
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void RemoveUser(TcpClient tcpUser)
         {
             // If the user is there
@@ -254,7 +257,7 @@ namespace Server
             //MessageBox.Show("ho finito keeplistening!");
             //newConnection.setRunning();
         }
-
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public  void RemoveAllUser()
         {
           
@@ -281,6 +284,7 @@ namespace Server
 
         //@dany modifiche
         // Occures when a new client is accepted
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void AcceptClient(object tcpCon)
         {
             bool finito = false;
@@ -448,9 +452,16 @@ namespace Server
             // Loop through the list of TCP clients
             for (int i = 0; i < tcpClientM.Length; i++)
             {
-                NetworkStream stream1 = tcpClientM[i].GetStream();
-                formatter.Serialize(stream1, diff);
-                
+                try
+                {
+                    NetworkStream stream1 = tcpClientM[i].GetStream();
+                    formatter.Serialize(stream1, diff);
+                }
+                catch
+                {//remove the tcpClient
+                    this.RemoveUser(tcpClientM[i]);
+
+                }
                
             }
 

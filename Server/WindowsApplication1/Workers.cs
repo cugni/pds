@@ -14,7 +14,7 @@ namespace Server.worker{
         protected  Point p;
         private  WorkerPool father;
         private int nMilli=1000;
-        private Bitmap oldBitmap;
+        protected Bitmap oldBitmap;
         protected static IntPtr m_HBitmap;
         protected Cursor cursor = Cursors.Arrow;
         protected Rectangle img_size;
@@ -188,9 +188,12 @@ namespace Server.worker{
                 p = Cursor.Position;
 
                         RECT rct = GetForegroundWindow();
-
-                        tot_img_size.Width = Math.Abs(rct.Left - rct.Right);
-                        tot_img_size.Height = Math.Abs(rct.Bottom - rct.Top);
+                        int w=Math.Abs(rct.Left - rct.Right);
+                        int h=Math.Abs(rct.Bottom - rct.Top);
+                        if (h == 0 || w == 0)
+                            return this.oldBitmap;
+                        tot_img_size.Width = w;
+                        tot_img_size.Height =h ;
 
                         Bitmap bmpScreenshot = new Bitmap(tot_img_size.Width,
                                          tot_img_size.Height,
