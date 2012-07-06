@@ -671,7 +671,12 @@ namespace ChatClient
                                 abort = false;
                                 string fileName = tmp.Substring(6);
                                 byte[] clientData = Convert.FromBase64String(str.ReadLine());
-                                BinaryWriter bWrite = new BinaryWriter(File.Open(Path.GetFullPath(@".\File ricevuti\") + fileName, FileMode.Create));
+                                string frdir = Path.GetFullPath(@".\File ricevuti\");
+                                if (!System.IO.File.Exists(frdir))
+                                {
+                                    System.IO.Directory.CreateDirectory(frdir);
+                                }
+                                BinaryWriter bWrite = new BinaryWriter(File.Open(frdir + fileName, FileMode.Create));
                                 bWrite.Write(clientData, 4 + fileName.Length, clientData.Length - 4 - fileName.Length);
                                 bWrite.Close();
                                 paths.Add(Path.GetFullPath(@".\File ricevuti\") + fileName);
