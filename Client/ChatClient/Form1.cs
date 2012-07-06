@@ -639,13 +639,20 @@ namespace ChatClient
             NetworkStream netstream = tcpClip.GetStream();
             int j;
             bool abort = false;
-
+            
             while (Connected==true)
             {
-                 
-                    string what = str.ReadLine();
-
+                string what;
+                try
+                {
+                   what  = str.ReadLine();
+                }
+                catch
+                {
+                    return;
+                }
                     if (MessageBox.Show("E' stata condivisa una clipboard.\n Accettarla, sovrascrivendo la clipboard attuale?", "Clipboard condivisa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+
                     {
                         if (what.Substring(0, 4).Equals("File"))
                         {
