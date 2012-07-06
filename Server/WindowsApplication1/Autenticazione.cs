@@ -68,7 +68,7 @@ namespace Server
             this.Close();
         }
 
-        //@dany modifiche
+        
         private void setIpAddress()
         {
             string myHost = System.Net.Dns.GetHostName();

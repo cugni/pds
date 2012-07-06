@@ -20,7 +20,7 @@ namespace ChatClient
         private Form1 f;
         private SocketforClient s;
         
-        private bool ret;//alby
+        private bool ret;
 
 
         private volatile bool _shouldStop;

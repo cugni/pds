@@ -229,7 +229,7 @@ namespace Server
         {
             TcpClient tcpClient;
             // While the server is running
-            //alby loop!!!
+            
             while (_connected)
             {
                 //MessageBox.Show("inizio keeplistening!");
@@ -282,7 +282,7 @@ namespace Server
             
         }
 
-        //@dany modifiche
+        
         // Occures when a new client is accepted
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void AcceptClient(object tcpCon)
@@ -366,7 +366,7 @@ namespace Server
                 {
                     if (tcpClient.GetStream().DataAvailable)
                     {
-                        if (((strResponse = srReceiver.ReadLine()) != "#####"))//alby10
+                        if (((strResponse = srReceiver.ReadLine()) != "#####"))
                         {
                             // If it's invalid, remove the user
                             if (strResponse == null)

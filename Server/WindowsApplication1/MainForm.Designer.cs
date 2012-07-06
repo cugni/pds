@@ -244,6 +244,6 @@ namespace Server
         public static System.Windows.Forms.Label label1;
         public static System.Windows.Forms.ToolStripMenuItem StartToolStripMenuItem;
         public static System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;
-        //alby end
+        
     }
 }

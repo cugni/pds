@@ -1,4 +1,4 @@
-﻿//alby
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,11 +56,11 @@ namespace Server
             radioButton1.Checked = true;
             listBox1.SetSelected(listBox1.Items.IndexOf(kstartold.ToString()), true);
 
-            //alby2 
+            
             this.AutoSize = true;
             this.MaximizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            //alby2 end
+            
         }
 
         private void button1_Click(object sender, EventArgs e)

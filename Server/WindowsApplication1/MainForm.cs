@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-//alby
 using System.Diagnostics;
 using Server.worker;
 
@@ -67,7 +66,7 @@ namespace Server
            
         }
 
-        //alby
+        
         public void setTasti(Keys start, Keys end)
         {
             kstart = start;
@@ -80,7 +79,7 @@ namespace Server
             return tipoCattura;
         }
 
-        //alby - tolta funzione "attiva()"-->era inutile..
+        // tolta funzione "attiva()"-->era inutile..
         void FormB_FormClosed(object sender, FormClosedEventArgs e)
         {
 
@@ -92,12 +91,12 @@ namespace Server
                 endToolStripMenuItem.Enabled = false;
             }
         }
-        //alby end
+        
         private CaptureType tipoCattura = CaptureType.FULL_SCREEN;
         void FormImpostazioni_FormClosed(object sender, FormClosedEventArgs e)
         {
             Impostazioni imp = (Impostazioni)sender;
-            tipoCattura = imp.getTipoCattura();//alby
+            tipoCattura = imp.getTipoCattura();
         }
 
        
@@ -144,7 +143,7 @@ namespace Server
                 
             
         }
-        //alby3 end
+        
 
         //Apertura condivisione monitor
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
@@ -218,7 +217,7 @@ namespace Server
                     first = false;
                 }
                 this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Regular);
-                //alby5
+                
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
                 // Show that we started to listen for connections
@@ -233,16 +232,16 @@ namespace Server
             }
             else
             {
-                //alby
+                
                 end();
 
                 server.stop();             
                 server.closeClip();
                 connettiToolStripMenuItem.Text = "Connetti";
-                //alby5
+                
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
+                
                 txtLog.SelectionColor = Color.Red;
                 txtLog.AppendText("Stop listening to connections\r\n\r\n");
                 btnSend.Enabled = false;
@@ -279,7 +278,7 @@ namespace Server
 
 
 
-        //alby5
+        
         /*
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -293,7 +292,7 @@ namespace Server
         private void opzioniConnessioneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Apertura Autenticazione
-            af = new Autenticazione(server);//alby
+            af = new Autenticazione(server);
             af.Activate();
             af.Show();
 
@@ -324,10 +323,10 @@ namespace Server
                 string user = strMessage.Substring(0, posizione);
                 string msg = strMessage.Substring(posizione);
 
-                //alby5
+               
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
+               
 
                 txtLog.SelectionColor = Color.Blue;
                 txtLog.AppendText(user + " ");
@@ -336,17 +335,17 @@ namespace Server
             }
             else
             {
-                //alby5
+                
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
+                
                 txtLog.SelectionColor = Color.Red;
                 this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Regular);
                 txtLog.AppendText(strMessage + "\r\n\r\n");
             }
         }
 
-        //@dany modifiche
+       
         private void btnSend_Click(object sender, EventArgs e)
         {
             string fix = txtMessage.Text.Replace( "\r\n", " ");
@@ -468,17 +467,17 @@ namespace Server
             }
         }
 
-        //alby2
+       
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StartToolStripMenuItem.Text = "Start Capturing(CTRL+" + kstart.ToString() + ")";
             endToolStripMenuItem.Text = "End Capturing(CTRL+" + kend.ToString() + ")";
         }
-        //alby2 end
+       
 
 
 
-        //alby
+       
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]

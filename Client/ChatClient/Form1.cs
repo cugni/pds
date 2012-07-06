@@ -41,10 +41,10 @@ namespace ChatClient
         private bool Connected, record_showing=true, chat=true, first=true, flagVis=false;
         public Form settings;
         public SocketforClient s;
-        //alby
+        
         Worker workerObject;
         Thread workerThread;
-        //alby end
+       
 
 
         //per clipboard
@@ -103,7 +103,7 @@ namespace ChatClient
             if (Connected == true)
             {
                 // Closes the connections, streams, etc.
-                string text = "#####";//alby10
+                string text = "#####";
                 swSender.WriteLine(text);
                 Connected = false;
                 swSender.Close();
@@ -188,12 +188,12 @@ namespace ChatClient
                 clipThread.SetApartmentState(ApartmentState.STA);
                 clipThread.Start();
 
-                //alby
+                
                 workerObject = new Worker(this, pictureBox1, s);
                 workerThread = new Thread(workerObject.DoWork);
                 workerThread.Start();
                 while (!workerThread.IsAlive);
-                //alby end
+                
 
             }
             else // If the first character is not a 1 (probably a 0), the connection was unsuccessful
@@ -255,7 +255,7 @@ namespace ChatClient
         }
 
         // This method is called from a different thread in order to update the log TextBox
-        //@dany modifiche
+        
         private void UpdateLog(string strMessage)
         {
             txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Regular);
@@ -267,10 +267,10 @@ namespace ChatClient
                 string user = strMessage.Substring(0, posizione);
                 string msg = strMessage.Substring(posizione);
 
-                //alby5
+                
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
+                
 
                 txtLog.SelectionColor = Color.Blue;
                 txtLog.AppendText(user + " "); 
@@ -280,10 +280,10 @@ namespace ChatClient
             else
             {
 
-                //alby5
+                
                 txtLog.SelectionColor = Color.Black;
                 txtLog.AppendText(" ");
-                //alby5 end
+                
 
                 txtLog.SelectionColor = Color.Red;
                 txtLog.AppendText(strMessage + "\r\n\r\n");
@@ -295,14 +295,14 @@ namespace ChatClient
         private void CloseConnection(string Reason)
         {
             // Show the reason why the connection is ending
-            //alby5
+            
             txtLog.SelectionColor = Color.Black;
             txtLog.AppendText(" ");
-            //alby5 end
+            
 
             txtLog.SelectionColor = Color.Red;
             txtLog.AppendText(Reason + "\r\n\n");
-            //txtLog.SelectionColor = Color.Black;alby10
+            //txtLog.SelectionColor = Color.Black;
             // Enable and disable the appropriate controls on the form
             //txtIp.Enabled = true;
             //txtUser.Enabled = true;
@@ -320,7 +320,7 @@ namespace ChatClient
 
 
 
-            //alby2
+           
             try
             {
                 workerObject.RequestStop();
@@ -329,20 +329,20 @@ namespace ChatClient
             }
             catch
             {
-                //alby5
+                
                 //MessageBox.Show("ciao");
             }
 
             workerThread.Abort();
             //MessageBox.Show("disconnetto");
-            if (record_showing == true) label1.Visible = true;//alby10
+            if (record_showing == true) label1.Visible = true;
             pictureBox1.BackColor = Color.Black;
 
 
             Bitmap bitm = new Bitmap(Screen.PrimaryScreen.Bounds.Height, Screen.PrimaryScreen.Bounds.Width);
             pictureBox1.Image = bitm;
             pictureBox1.Refresh();
-            //alby2 end 
+            
         }
 
         // Sends the message typed in to the server
@@ -352,7 +352,7 @@ namespace ChatClient
             txtMessage.Text = fix;
             if (txtMessage.Lines.Length >= 1)
             {  
-                //alby10
+                
                 if (txtMessage.Text == "#####") { txtMessage.Text = " #####"; }
 
                 swSender.WriteLine(fix);
@@ -472,7 +472,7 @@ namespace ChatClient
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
             this.Left = Screen.PrimaryScreen.WorkingArea.Width - this.Width;
             this.Top = Screen.PrimaryScreen.WorkingArea.Height - this.Height;
-            //this.txtLog.ForeColor = System.Drawing.Color.Green;alby10
+            //this.txtLog.ForeColor = System.Drawing.Color.Green;
             this.txtLog.Font = new Font(txtLog.SelectionFont, FontStyle.Italic);
             //this.txtLog.Text = "To use the program, first you have to connect to a server.\r\nSelect File -> connect, fill in the fields and click ok.\r\nIf you want to change the options later, select File -> settings.\r\n\r\n";
             this.txtLog.Text = "Per utilizzare il programma premi il pulsante Connetti e inserisci le impostazoni di connessione. \r\n E' anche possibile modificare le informazioni in File->Impostazioni.\r\n\r\n";
@@ -482,7 +482,7 @@ namespace ChatClient
             label1.Visible = true;
             pictureBox1.BackColor = Color.Black;
             labelCenter();
-            //alby end
+            
 
             
         }
@@ -495,7 +495,7 @@ namespace ChatClient
             if (Connected == true)
             {
                 // Closes the connections, streams, etc.
-                string text = "#####";//alby10
+                string text = "#####";
                 swSender.WriteLine(text);
                 Connected = false;
                 swSender.Close();
@@ -506,7 +506,6 @@ namespace ChatClient
             this.Close();
         }
 
-        //@dany modifiche
         private void button1_Click(object sender, EventArgs e)
         {
             if (record_showing == true)
@@ -514,7 +513,7 @@ namespace ChatClient
                 button2.Enabled = false;
                 pictureBox1.Hide();
                 button1.Text = "Visualizza anteprima";
-                label1.Visible = false;//alby
+                label1.Visible = false;
                 pictureBox1.BackColor = Color.Beige;
                 this.Width = txtLog.Width + 100;
                 record_showing = false;
@@ -525,7 +524,7 @@ namespace ChatClient
             else
             {
                 button2.Enabled = true;
-                label1.Visible = true;//alby
+                label1.Visible = true;
                 pictureBox1.BackColor = Color.Black;
                 this.Width = Screen.PrimaryScreen.WorkingArea.Width;
                 pictureBox1.Show();
@@ -537,7 +536,7 @@ namespace ChatClient
             }
         }
 
-        //alby
+        
         private void labelCenter()
         {
             this.label1.Top = (pictureBox1.Height - this.label1.Height) / 2;
@@ -545,7 +544,7 @@ namespace ChatClient
         }
 
 
-        //@dany modifiche
+       
         private void button2_Click(object sender, EventArgs e)
         {
             if (chat == true)

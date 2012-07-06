@@ -52,7 +52,7 @@ namespace Server
             if (MainForm.StartToolStripMenuItem.Enabled) disabilita = false;
             else if (!server.connected) disabilita = false;
 
-            //alby end
+            
             InitializeComponent();
 
         }
