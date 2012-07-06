@@ -243,8 +243,8 @@ namespace Server
                 }
                 catch (SocketException se)
                 {
-                    if (_connected)
-                        throw se; //TODO fix it
+                    Console.WriteLine(se.Message);
+                    return;
                 }
                 
             }

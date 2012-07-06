@@ -218,6 +218,8 @@ namespace Server
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            label1.ForeColor = Color.Red;
+            label1.Text = "CAPTURE: disabled";
 
         }
 
