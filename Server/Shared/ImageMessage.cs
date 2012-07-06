@@ -8,8 +8,9 @@ using System.Runtime.Serialization;
 
 namespace Shared.Message
 {
-    [Serializable]
-    public class ImageMessage {
+    [Serializable()]
+    public class ImageMessage : ISerializable
+    {
         public Rectangle img_size;
         public Rectangle total_img_size;
         public Bitmap bitmap;
