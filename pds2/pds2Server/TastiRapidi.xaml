@@ -17,16 +17,25 @@
             </Grid>
         </GroupBox>
         <Expander Header="Shortcuts" Name="shortcuts" Margin="0,86,0,72" Grid.RowSpan="2">
-            <Grid Height="108" Width="224">
+            <Grid Height="108" Width="224" >
                 <Label Content="+" Height="28" HorizontalAlignment="Right" Margin="0,8,114,0" Name="label1" VerticalAlignment="Top" />
                 <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="6,57,0,0" Name="btnOk" VerticalAlignment="Top" Width="75" Click="btnOk_Click" />
                 <Button Content="Annulla" Height="23" HorizontalAlignment="Left" Margin="127,57,0,0" Name="btnAnnulla" VerticalAlignment="Top" Width="75" />
-                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,7,22,0" Name="comboBox1" VerticalAlignment="Top" Width="75">
+                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,7,22,0" Name="comboBox1" VerticalAlignment="Top" Width="75" MaxDropDownHeight="5">
                     <ComboBoxItem Content="F1" IsSelected="True" />
                     <ComboBoxItem Content="F2" />
                     <ComboBoxItem Content="F3" />
                     <ComboBoxItem Content="F4" />
                     <ComboBoxItem Content="F5" />
+                    <ComboBoxItem Content="F6" />
+                    <ComboBoxItem Content="F7" />
+                    <ComboBoxItem Content="F8" />
+                    <ComboBoxItem Content="F9" />
+                    <ComboBoxItem Content="F10" />
+                    <ComboBoxItem Content="F11" />
+                    <ComboBoxItem Content="F12" />
+                    <ComboBoxItem Content="UP" />
+                    <ComboBoxItem Content="DOWN"/>
                 </ComboBox>
                 <TextBox Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="textBox1" VerticalAlignment="Top" Width="75" IsReadOnlyCaretVisible="True" IsEnabled="False" Text="CTRL" TextAlignment="Center" />
             </Grid>
