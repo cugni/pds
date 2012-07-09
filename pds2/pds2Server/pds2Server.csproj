@@ -58,6 +58,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ClientConnection.cs" />
+    <Compile Include="Connessione.xaml.cs">
+      <DependentUpon>Connessione.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FrmSelezione.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +76,10 @@
     </Compile>
     <Compile Include="Workers.cs" />
     <Compile Include="WorkingPoll.cs" />
+    <Page Include="Connessione.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Impostazioni.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

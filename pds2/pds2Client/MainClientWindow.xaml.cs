@@ -313,6 +313,16 @@ namespace pds2.ClientSide
             client.Disconnect();
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            imposta();
+            
+        }
+
+        private void InfoClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Created by \nCesare Cugnasco & Mauro Canuto", "Info");
+        }
 
         
     }

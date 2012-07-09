@@ -44,7 +44,7 @@
         <TabControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" MinHeight="200" MinWidth="200"
                     Name="tabControl" >
             <TabItem Header="Connessione" Name="impConnessione">
-                <Grid ></Grid>
+                <local:Connessione x:Name="impostazConn" />
             </TabItem>
             <TabItem Header="Video" Name="impVideo" >
                 <local:Impostazioni x:Name="impostazione" />
@@ -64,12 +64,12 @@
 
                 </MenuItem>
                 <MenuItem Header="_Aiuto">
-                    <MenuItem Header="_Informazioni" IsCheckable="true"/>
+                <MenuItem Header="_Informazioni" IsCheckable="false" Click="InfoClick"/>
 
                 </MenuItem>
 
             </Menu>
-     </Grid>
+    </Grid>
    
 
 </Window>

@@ -37,21 +37,18 @@
             <TabItem Header="Video">
                 <local:VideoCanvas x:Name="canvas"/>
             </TabItem>
-            <TabItem Header="Impostazioni">
-               
-            </TabItem>
         </TabControl>
         <RichTextBox Grid.Column="1" Name="chatHistory" Background="#1B000000" Grid.Row="1" />
         <Menu  Name="menu" Grid.ColumnSpan="2" >
             <MenuItem Header="_File">
                 <MenuItem Header="_Connetti" Name="conButton" IsCheckable="true" Click="connetti"/>
-                <MenuItem Header="_Esci" IsCheckable="true" Click="chiudi"/>
+                <MenuItem Header="_Esci" IsCheckable="false" Click="chiudi"/>
              </MenuItem>
                  <MenuItem Header="_Impostazioni">
-                      <MenuItem Header="_Impostazioni connessione" IsCheckable="true"/>
+                <MenuItem Header="_Impostazioni connessione"  Click="MenuItem_Click"/>
                  </MenuItem>
             <MenuItem Header="_Aiuto">
-                <MenuItem Header="_Informazioni" IsCheckable="true"/>
+                <MenuItem Header="_Informazioni" IsCheckable="false" Click="InfoClick"/>
             </MenuItem>
         </Menu>
        

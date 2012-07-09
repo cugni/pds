@@ -278,7 +278,7 @@ namespace pds2.ServerSide
                 listen.Start();
                 while (_connect)
                 {
-                    
+
                     TcpClient ncli = listen.AcceptTcpClient();
                     ArrayList name = new ArrayList();
                     foreach (ClientConnection cli in clients)
@@ -347,7 +347,9 @@ namespace pds2.ServerSide
         public override event ImageMessageDelegate receivedVideo;
 
         public override event ClipboardMessageDelegate receivedClipboard;
+
+
+
+        
     }
-
-
 }

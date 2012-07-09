@@ -59,7 +59,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connessione.xaml.cs">
+      <DependentUpon>Connessione.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoCanvas.cs" />
+    <Page Include="Connessione.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Impostazioni.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
