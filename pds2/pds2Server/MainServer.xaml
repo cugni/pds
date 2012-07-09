@@ -1,0 +1,72 @@
+﻿<Window x:Class="pds2.ServerSide.MainServerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:pds2.ServerSide"
+        Title="Server" Height="350" Width="525" >
+         <Window.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#DAD4D4FF" Offset="0" />
+                <GradientStop Color="White" Offset="1" />
+            </LinearGradientBrush>
+        </Window.Background>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300*" />
+                <ColumnDefinition Width="200*" >
+
+                </ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DockPanel Height="Auto" HorizontalAlignment="Left" Name="dockPanel1" VerticalAlignment="Top" Width="Auto" Grid.Row="1" />
+        <Button Content="invia clipboard" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="0,5,0,0" Name="shareClipboardButton" VerticalAlignment="Top" Width="100" IsEnabled="False" Click="_sendClipboard" />
+            <Button Content="Invia" Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Right" Margin="106,5,0,0" Name="sendButton" VerticalAlignment="Top" Width="94" Click="sendButton_Click" IsEnabled="False" />
+
+            <Border BorderBrush="Silver" BorderThickness="1" Grid.Column="1" Grid.Row="3" Height="auto"
+                Name="border1" 
+               Width="Auto" >
+                <TextBox Grid.Column="1" Grid.Row="2" MinHeight="100" 
+                         Name="chatInputField" MinWidth="200" Background="#FFF2FCFC" KeyDown="chatInputField_KeyDown" />
+
+            </Border>
+        <StatusBar Grid.Row="5" Grid.ColumnSpan="2"   Width="auto"   Name="Status"   >
+            <StatusBarItem   >
+                <TextBlock Name="conStatus">Non connesso</TextBlock>
+
+            </StatusBarItem>
+        </StatusBar>
+        <RichTextBox Grid.Column="1" Name="chatHistory" Background="#5569A669" Grid.Row="1" AllowDrop="False" AutoWordSelection="False" />
+        <TabControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" MinHeight="200" MinWidth="200"
+                    Name="tabControl" >
+            <TabItem Header="Connessione" Name="impConnessione">
+                <Grid ></Grid>
+            </TabItem>
+            <TabItem Header="Video" Name="impVideo" >
+                <local:Impostazioni x:Name="impostazione" />
+            </TabItem>
+        </TabControl>
+        <Menu  Name="menu" Grid.ColumnSpan="2" >
+                <MenuItem Header="_File"   >
+                <MenuItem Header="_Connetti" Name="conButton" Click="_Connetti_Click" IsCheckable="true" />
+                <MenuItem Header="_Stream video" IsCheckable="true" Click="startStreamVideo"/>
+                <MenuItem Header="_Esci"/>
+                </MenuItem>
+                <MenuItem Header="_Impostazioni">
+                    <MenuItem Header="_Impostazioni connessione"  />
+
+                </MenuItem>
+                <MenuItem Header="_Aiuto">
+                    <MenuItem Header="_Informazioni" IsCheckable="true"/>
+
+                </MenuItem>
+
+            </Menu>
+     </Grid>
+   
+
+</Window>

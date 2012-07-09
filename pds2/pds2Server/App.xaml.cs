@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace pds2Server
+namespace pds2.ServerSide
 {
     /// <summary>
     /// Logica di interazione per App.xaml
