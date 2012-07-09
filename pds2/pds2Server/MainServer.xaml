@@ -49,6 +49,9 @@
             <TabItem Header="Video" Name="impVideo" >
                 <local:Impostazioni x:Name="impostazione" />
             </TabItem>
+            <TabItem Header="Shortcuts" Name="tRapidi" >
+                <local:TastiRapidi x:Name="shortcuts" />
+            </TabItem>
         </TabControl>
         <Menu  Name="menu" Grid.ColumnSpan="2" >
                 <MenuItem Header="_File"   >

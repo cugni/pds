@@ -68,6 +68,9 @@
       <DependentUpon>Impostazioni.xaml</DependentUpon>
     </Compile>
     <Compile Include="Server.cs" />
+    <Compile Include="TastiRapidi.xaml.cs">
+      <DependentUpon>TastiRapidi.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workers.cs" />
     <Compile Include="WorkingPoll.cs" />
     <Page Include="Impostazioni.xaml">
@@ -86,6 +89,10 @@
       <DependentUpon>MainServer.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TastiRapidi.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
