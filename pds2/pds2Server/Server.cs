@@ -136,11 +136,11 @@ namespace pds2.ServerSide
                     connectionStateEvent(false);
                 //shutdown all threads
                 _connect = false;
-                _accepterConn.Abort();
-                _chatDispatcher.Abort();
-                _clipboardDispatcher.Abort();
-                _chatDispatcher.Abort();
-                _videoDispatcher.Abort();
+                killThread(_accepterConn);
+                killThread(_chatDispatcher);
+                killThread(_clipboardDispatcher);
+                killThread(_chatDispatcher);
+                killThread(_videoDispatcher);
                 if (listen != null)
                     listen.Stop();
                 //reset state
@@ -154,6 +154,14 @@ namespace pds2.ServerSide
             }
 
 
+        }
+        private void killThread(Thread t)
+        {
+            try
+            {
+                t.Abort();
+            }
+            catch (Exception) { }
         }
         private void _dispatchTextMsg()
         {
@@ -266,10 +274,11 @@ namespace pds2.ServerSide
 
             try
             {
+                listen = new TcpListener(_localend, _listenPort);
+                listen.Start();
                 while (_connect)
                 {
-                    listen = new TcpListener(_localend, _listenPort);
-                    listen.Start();
+                    
                     TcpClient ncli = listen.AcceptTcpClient();
                     ArrayList name = new ArrayList();
                     foreach (ClientConnection cli in clients)

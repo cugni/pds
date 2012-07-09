@@ -48,78 +48,97 @@ namespace pds2.ClientSide
         private volatile Exception _disconnectReason;
         public override void Connect()
         {
-            try
+            lock (this)
             {
-                _connect = true;
-                _textSocket = new TcpClient(srip, srport);
+                try
+                {
+                    _connect = true;
+                    _textSocket = new TcpClient(srip, srport);
+                    
+                    //inizia l'autenticazione
+                    //ricevo il sale
+                    ChallengeMessage sale = ChallengeMessage.recvMe(_textSocket.GetStream());
+                    ResponseChallengeMessage resp = new ResponseChallengeMessage();
+                    resp.username = _username;
+                    resp.pswMd5 = Pds2Util.createPswMD5(this.pass, sale.salt);
+                    resp.sendMe(_textSocket.GetStream());
+                    ConfigurationMessage conf = ConfigurationMessage.recvMe(_textSocket.GetStream());
+                    if (!conf.success)
+                        throw new ArgumentException(conf.message);
 
-                //inizia l'autenticazione
-                //ricevo il sale
-                ChallengeMessage sale = ChallengeMessage.recvMe(_textSocket.GetStream());
-                ResponseChallengeMessage resp = new ResponseChallengeMessage();
-                resp.username = _username;
-                resp.pswMd5 = Pds2Util.createPswMD5(this.pass, sale.salt);
-                resp.sendMe(_textSocket.GetStream());
-                ConfigurationMessage conf = ConfigurationMessage.recvMe(_textSocket.GetStream());
-                if (!conf.success)
-                    throw new ArgumentException(conf.message);
+                    _clipSocket = new TcpClient(srip, conf.clip_port);
+                    _videoSocket = new TcpClient(srip, conf.video_port);
 
-                _clipSocket = new TcpClient(srip, conf.clip_port);
-                _videoSocket = new TcpClient(srip, conf.video_port);
-               
+                }
+                catch (Exception e)
+                {
+
+                    connectionStateEvent(false);
+                    _connect = false;
+                    throw new ArgumentException("Impossibile connettersi al server. \n" + e.Message);
+                }
+                msgTosend = new BlockingCollection<TextMessage>();
+                chatSenderThread = new Thread(this._deleverMsg);
+                chatReceiveThread = new Thread(_receiveMsg);
+                chatReceiveThread.Start();
+                chatSenderThread.Start();
+                //  chatSenderThread.IsBackground = true;
+                //   chatReceiveThread.IsBackground = true;
+                clipboardThread = new
+                    Thread(_listenClipboard);
+                clipboardThread.Start();
+                videoThread = new Thread(_receiveVideo);
+                // videoThread.IsBackground = true;
+                videoThread.Start();
+
+                if (connectionStateEvent != null)
+                    connectionStateEvent(true);
             }
-            catch (Exception e)
-            {
-
-                connectionStateEvent(false);
-                _connect = false;
-                throw new ArgumentException("Impossibile connettersi al server. \n" + e.Message);
-            }
-            msgTosend = new BlockingCollection<TextMessage>();
-            chatSenderThread = new Thread(this._deleverMsg);
-            chatReceiveThread = new Thread(_receiveMsg);
-            chatReceiveThread.Start();
-            chatSenderThread.Start();
-          //  chatSenderThread.IsBackground = true;
-         //   chatReceiveThread.IsBackground = true;
-            clipboardThread = new
-                Thread(_listenClipboard);
-            clipboardThread.Start();
-            videoThread = new Thread(_receiveVideo);
-           // videoThread.IsBackground = true;
-            videoThread.Start();
-
-            if (connectionStateEvent != null)
-                connectionStateEvent(true);
-
         }
         public override void Disconnect()
         {
-            if (!_connect)
-                throw new ArgumentException("Il server non è connesso");
-            TextMessage leav = new TextMessage();
-            leav.messageType = MessageType.USER_LEAVE;
-            leav.username = _username;
-              if (_disconnectReason != null)
+            lock (this)
             {
-                leav.message = _disconnectReason.Message;
-                ReceivedMessage(leav); //scrivo nella chat del client che mi disconnetto
-            }
-            leav.message = "bye bye";
-            try
-            {
-                sendMessage(leav);
-            }
-            catch (Exception) { }
-            _connect = false;
-            mcw.sendMessage -= this.sendMessage;
-            msgTosend.Dispose();
-            chatSenderThread.Abort();
-            clipboardThread.Abort();
-            chatReceiveThread.Abort();
+                if (!_connect)
+                    return;
+                TextMessage leav = new TextMessage();
+                leav.messageType = MessageType.USER_LEAVE;
+                leav.username = _username;
+                if (_disconnectReason != null)
+                {
+                    leav.message = _disconnectReason.Message;
+                    ReceivedMessage(leav); //scrivo nella chat del client che mi disconnetto
+                }
+                leav.message = "bye bye";
+                try
+                {
+                    sendMessage(leav);
+                }
+                catch (Exception) { }
+                _connect = false;
+                if (connectionStateEvent != null)
+                    connectionStateEvent(false);
+                
+                msgTosend.Dispose();
+                try
+                {
+                    chatSenderThread.Abort();
+                }
+                catch (Exception) { }
+                try
+                {
+                    clipboardThread.Abort();
+                }
+                catch (Exception) { }
+                try
+                {
+                    chatReceiveThread.Abort();
+                }
+                catch (Exception) { }
+             
+               
 
-            if (connectionStateEvent != null)
-                connectionStateEvent(false);
+            }
         }
         private void sendMessage(String msg)
         {
