@@ -24,6 +24,13 @@ namespace pds2.ServerSide
             InitializeComponent();
         }
 
+        private void btnOk_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBoxItem selected = (ComboBoxItem)comboBox1.SelectedValue;
+            string txt = "scelto-> " + selected.Content.ToString();
+            
+        }
+
 
 
 
