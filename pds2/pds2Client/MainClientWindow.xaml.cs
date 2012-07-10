@@ -40,6 +40,7 @@ namespace pds2.ClientSide
             client.receivedMessage += addChatLogText;
             client.receivedVideo += _handleImageMessage;
             client.receivedClipboard += _handleClipboard;
+            impo.setClient((Client)client);
         }
         private void _setState(bool connect)
         {
@@ -123,18 +124,26 @@ namespace pds2.ClientSide
 
         private void connetti()
         {
-            if (!imposta())return ; //imposta il client e se annullato ritorna subito
+            if (!imposta())
+            {
+                conButton.IsChecked = false;
+                return;
+            }//imposta il client e se annullato ritorna subito
             try
             {
                 if (client.IsConnect)
                 {
                     client.Disconnect();
+                    conButton.IsChecked = false;
+                    conButton.Header = "_Disconnetti";
                     conStatus.Text = "Non connesso";
 
                 }
                 else
                 {
                     client.Connect();
+                    conButton.IsChecked = true;
+                    conButton.Header = "_Connetti";
                     conStatus.Text = "Connesso";
                 }
             }
@@ -153,9 +162,8 @@ namespace pds2.ClientSide
         {
             if (!client.IsConfigured)
             {
-                Impostazioni imp = new Impostazioni((Client)client);
-                imp.Show();
-                imp.Closed += connetti;
+                impoTab.IsSelected = true;
+                conStatus.Text = "Inserisci le credenziali per connetterti";
                 return false;
             }
             else

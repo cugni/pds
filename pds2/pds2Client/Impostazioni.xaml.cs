@@ -17,10 +17,14 @@ namespace pds2.ClientSide
     /// <summary>
     /// Logica di interazione per Impostazioni.xaml
     /// </summary>
-    public partial class Impostazioni : Window
+    public partial class Impostazioni : UserControl
     {
         private Client client;
-        public Impostazioni(Client cli)
+        public Impostazioni()
+        {
+
+        }
+        public void setClient(Client cli)
         {
             this.client = cli;
             InitializeComponent();
@@ -64,7 +68,7 @@ namespace pds2.ClientSide
             {
                 client.configure(username.Text, pasword.Password, serverip.Text, port);
 
-                this.Close();
+                
             }
             catch (ArgumentException ae)
             {
@@ -75,7 +79,7 @@ namespace pds2.ClientSide
         
         private void annulla_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+             
         }
 
         
