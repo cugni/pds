@@ -59,7 +59,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connessione.xaml.cs">
+      <DependentUpon>Connessione.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoCanvas.cs" />
+    <Page Include="Connessione.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Impostazioni.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -110,6 +117,9 @@
       <Project>{D94F2BA2-EA89-4DA5-ABC9-0C926987582F}</Project>
       <Name>pds2Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icona.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

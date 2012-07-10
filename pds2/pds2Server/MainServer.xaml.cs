@@ -246,6 +246,11 @@ namespace pds2.ServerSide
             }
         }
 
-         
+        private void InfoClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Created by \nCesare Cugnasco & Mauro Canuto", "Info");
+        }
+
+
     }
 }

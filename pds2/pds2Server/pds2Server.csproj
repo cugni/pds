@@ -58,6 +58,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ClientConnection.cs" />
+    <Compile Include="Connessione.xaml.cs">
+      <DependentUpon>Connessione.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FrmSelezione.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,8 +71,15 @@
       <DependentUpon>Impostazioni.xaml</DependentUpon>
     </Compile>
     <Compile Include="Server.cs" />
+    <Compile Include="TastiRapidi.xaml.cs">
+      <DependentUpon>TastiRapidi.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workers.cs" />
     <Compile Include="WorkingPoll.cs" />
+    <Page Include="Connessione.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Impostazioni.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -86,6 +96,10 @@
       <DependentUpon>MainServer.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TastiRapidi.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -116,6 +130,9 @@
       <Project>{D94F2BA2-EA89-4DA5-ABC9-0C926987582F}</Project>
       <Name>pds2Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\icona.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
