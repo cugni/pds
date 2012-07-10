@@ -69,11 +69,11 @@ namespace pds2.Shared
         [DllImport("user32.dll", EntryPoint = "ReleaseDC")]
         public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDc);
 
-        /*
+        
          [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
         public static extern IntPtr DeleteObject(IntPtr hDc);
      
-         */
+         
 
 
         [DllImport("user32.dll", EntryPoint = "GetCursorInfo")]

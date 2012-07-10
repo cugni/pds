@@ -21,16 +21,23 @@ namespace pds2.ClientSide
 
 
 
+        private ImageSourceConverter conv = new ImageSourceConverter();
+        private BitmapSource bs = null;
         
+
         protected override void OnRender(DrawingContext dc)
         {
             ImageMessage msg=new ImageMessage();
             if (queue.TryDequeue(out msg))
             {
-                    //dc.DrawImage(Pds2Util.Bitmap2BitmapSource(msg.bitmap),
-                    //new Rect(msg.img_size.X, msg.img_size.Y,
-                    //    msg.img_size.Width,
-                    //    msg.img_size.Height));
+                MemoryStream stream=new MemoryStream(msg.bitmap);
+                JpegBitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                BitmapSource img=dec.Frames[0];
+                    dc.DrawImage(img,
+                    new Rect(msg.img_size.X, msg.img_size.Y,
+                        msg.img_size.Width,
+                        msg.img_size.Height));
+                    base.OnRender(dc);
             }
             else
             {

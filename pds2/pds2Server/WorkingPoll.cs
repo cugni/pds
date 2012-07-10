@@ -32,10 +32,10 @@ namespace pds2.ServerSide
     {
 
         public CaptureType tipoCattura { get; set; }
-        protected volatile bool _shouldStop;
+        protected volatile bool _connect;
         public bool IsConnect
         {
-            get { return _shouldStop; }
+            get { return _connect; }
         }
          
 
@@ -59,27 +59,28 @@ namespace pds2.ServerSide
 
         public void RequestStop()
         {
-            _shouldStop = true;
+            _connect = false;
         }
 
         public void RequestStart()
         {
 
-            _shouldStop = false;
+            _connect = false;
             //TODO add more threads
             Workers worker = null;
             switch (tipoCattura)
             {
                 case CaptureType.ACTIVE_WINDOW:
-                    worker = new ActiveWindowWorker( videoQueue);
+                    worker = new ActiveWindowWorker( videoQueue,this);
                     break;
                 case CaptureType.FULL_SCREEN:
-                    worker = new FullScreenWorker( videoQueue);
+                    worker = new FullScreenWorker( videoQueue,this);
                     break;
                 case CaptureType.SCREEN_AREA:
-                    worker = new ScreenAreaWorker(videoQueue, x, y, w, h);
+                    worker = new ScreenAreaWorker(videoQueue, x, y, w, h,this);
                     break;
             }
+            this._connect = true;
             ThreadPool.QueueUserWorkItem(new WaitCallback(worker.doWork));
         }
 

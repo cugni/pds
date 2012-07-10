@@ -85,7 +85,7 @@ namespace pds2.ClientSide
         public static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
         public void _handleImageMessage(ImageMessage p)
         {
-            Dispatcher.Invoke(new ImageMessageDelegate(__handleImageMessage));      
+            Dispatcher.Invoke(new ImageMessageDelegate(__handleImageMessage),p);      
         }
         private void __handleImageMessage(ImageMessage p)
         {

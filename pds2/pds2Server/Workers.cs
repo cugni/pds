@@ -10,14 +10,18 @@ using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using pds2.Shared;
 using System.Collections.Concurrent;
+using System.Windows.Interop;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace pds2.ServerSide
 {
     public abstract class Workers
     {
 
-        protected Point p;
-       
+        protected System.Drawing.Point p;
+
         private int nMilli = 1000;
         protected Bitmap oldBitmap;
         protected static IntPtr m_HBitmap;
@@ -25,29 +29,52 @@ namespace pds2.ServerSide
         protected Rectangle img_size;
         protected Rectangle tot_img_size;
         public event ImageMessageDelegate newImageMessage;
-        public volatile bool stop=false;
         private BlockingCollection<ImageMessage> videoQueue;
-        public Workers(BlockingCollection<ImageMessage> videoQueue)
+        private WorkerPool _father;
+        public Workers(BlockingCollection<ImageMessage> videoQueue, WorkerPool _father)
         {
+            this._father = _father;
             this.videoQueue = videoQueue;
         }
+
         public void doWork(Object nada)
         {
-           
-            while (!stop)
+
+            while (_father.IsConnect)
             {
 
-                Bitmap bmpScreenshot = getBitmap();
-                if (isModifiedBitmap(bmpScreenshot)) //TODO remove, only debug
+                Bitmap bmp = getBitmap();
+                if (isModifiedBitmap(bmp)) //TODO remove, only debug
                 {
-                    ImageMessage msg = new ImageMessage();
-                    msg.bitmap = bmpScreenshot;
-                    msg.total_img_size = tot_img_size;
-                    msg.img_size = tot_img_size; //TODO finché non suddivido
-                    msg.img_size.X = 0;
-                    msg.img_size.Y = 0;
-                    videoQueue.Add(msg);
-                   }
+                    IntPtr hBitmap = bmp.GetHbitmap();
+                    try
+
+                    {
+                        
+                        BitmapSource source = System.Windows.Interop.
+                            Imaging.CreateBitmapSourceFromHBitmap(hBitmap,
+                            IntPtr.Zero, Int32Rect.Empty,
+                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                        JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(source));
+                        MemoryStream ms=new MemoryStream();
+                        encoder.Save(ms);
+                        ImageMessage msg = new ImageMessage();
+                        msg.bitmap = ms.ToArray();
+                        msg.total_img_size = tot_img_size;
+                        msg.img_size = tot_img_size; //TODO finché non suddivido
+                        msg.img_size.X = 0;
+                        msg.img_size.Y = 0;
+                        videoQueue.Add(msg);
+                    
+                    }
+                    finally
+                    {
+                        WIN32_API.DeleteObject(hBitmap);
+                    }
+
+                    
+                }
 
                 Thread.Sleep(nMilli);
             }
@@ -58,7 +85,7 @@ namespace pds2.ServerSide
         private bool isModifiedBitmap(Bitmap a)
         {
             oldBitmap = a;
-              return true;
+            return true;
             //if (oldBitmap == null || !a.Size.Equals(oldBitmap.Size))
             //{
             //    oldBitmap = a;
@@ -102,7 +129,8 @@ namespace pds2.ServerSide
     }
     class FullScreenWorker : Workers
     {
-        public FullScreenWorker(BlockingCollection<ImageMessage> videoQueue):base(videoQueue)
+        public FullScreenWorker(BlockingCollection<ImageMessage> videoQueue,WorkerPool father)
+            : base(videoQueue,father)
         {
             this.tot_img_size = Screen.PrimaryScreen.Bounds;
         }
@@ -138,18 +166,19 @@ namespace pds2.ServerSide
     class ScreenAreaWorker : Workers
     {
 
-        public ScreenAreaWorker( BlockingCollection<ImageMessage> videoQueue,
-            int p_x, int p_y, int w, int h ):base(videoQueue)
+        public ScreenAreaWorker(BlockingCollection<ImageMessage> videoQueue,
+            int p_x, int p_y, int w, int h,  WorkerPool father)
+            : base(videoQueue,father)
         {
             tot_img_size.X = p_x;
             tot_img_size.Y = p_y;
             tot_img_size.Width = w;
             tot_img_size.Height = h;
-            point_s = new Point(p_x, p_y);
+            point_s = new System.Drawing.Point(p_x, p_y);
         }
 
 
-        private readonly Point point_s;
+        private readonly System.Drawing.Point point_s;
 
         protected override Bitmap getBitmap()
         {
@@ -160,7 +189,7 @@ namespace pds2.ServerSide
             Bitmap bmpScreenshot = new Bitmap(tot_img_size.Width,
                              tot_img_size.Height,
                              PixelFormat.Format32bppArgb);
-            Size size = tot_img_size.Size;
+            System.Drawing.Size size = tot_img_size.Size;
             // Create a graphics object from the bitmap. 
             gfxScreenshot = Graphics.FromImage(bmpScreenshot);
             // Take the screenshot from the upper left corner to the right bottom corner. 
@@ -184,7 +213,8 @@ namespace pds2.ServerSide
 
         protected Pen pen;
         public const Int32 CURSOR_SHOWING = 0x00000001;
-        public ActiveWindowWorker(BlockingCollection<ImageMessage> videoQueue):base(videoQueue)
+        public ActiveWindowWorker(BlockingCollection<ImageMessage> videoQueue, WorkerPool father)
+            : base(videoQueue,father)
         {
             pen = new Pen(Brushes.Red);
             pen.Width = 2.0F;
@@ -211,8 +241,9 @@ namespace pds2.ServerSide
 
             if (rct.Bottom > Screen.PrimaryScreen.WorkingArea.Bottom)
                 tot_img_size.Height = Math.Abs(Screen.PrimaryScreen.WorkingArea.Bottom - rct.Top);
-
+           
             // Create a graphics object from the bitmap. 
+        
             Graphics gfxScreenshot = Graphics.FromImage(bmpScreenshot);
             // Take the screenshot from the upper left corner to the right bottom corner. 
             gfxScreenshot.CopyFromScreen(rct.Left,

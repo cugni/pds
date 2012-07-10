@@ -74,13 +74,9 @@ namespace pds2.ServerSide
         public void Stream()
         {
             if (_wp.IsConnect)
-            {
-                _wp.RequestStart();
-            }
+               _wp.RequestStop();
             else
-            {
-                _wp.RequestStart();
-            }
+                _wp.RequestStart();            
         }
         public Server(IMainWindow mwc)
             : base(mwc)
