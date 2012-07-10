@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections;
 
 
 namespace pds2.ServerSide
@@ -23,26 +24,45 @@ namespace pds2.ServerSide
         public TastiRapidi()
         {
             InitializeComponent();
+
         }
         private MainServerWindow _father;
         public void setFather(MainServerWindow father)
         {
-            this._father = father;
-            
+            this._father = father;            
         }
         
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
           //  ComboBoxItem selected = (ComboBoxItem)comboBox1.SelectedValue;
             //string txt = "scelto-> " + selected.Content.ToString();
-            KeyConverter con = new KeyConverter();
-           Key keystart = (Key)con.ConvertFromString(keyStart.Text);
-           Key keystop = (Key)con.ConvertFromString(keyStop.Text);
-            _father.kstart = keystart;
-            _father.kstop = keystop;
+          //  KeyConverter con = new KeyConverter();
+           //Key keystart = (Key)con.ConvertFromString(keyStart.Text);
+           //Key keystop = (Key)con.ConvertFromString(keyStop.Text);
+           // _father.kstart = keystart;
+           // _father.kstop = keystop;
+            IEnumerable l = EnumToList<Key>();
         }
 
+        public static IEnumerable<T> EnumToList<T>()
+        {
+            Type enumType = typeof(T);
 
+            // Can't use generic type constraints on value types,
+            // so have to do check like this
+            if (enumType.BaseType != typeof(Enum))
+                throw new ArgumentException("T must be of type System.Enum");
+
+            Array enumValArray = Enum.GetValues(enumType);
+            List<T> enumValList = new List<T>(enumValArray.Length);
+
+            foreach (int val in enumValArray)
+            {
+                enumValList.Add((T)Enum.Parse(enumType, val.ToString()));
+            }
+
+            return enumValList;
+        }
 
 
 

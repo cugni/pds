@@ -27,8 +27,9 @@ namespace pds2.ClientSide
 
         protected override void OnRender(DrawingContext dc)
         {
+            base.OnRender(dc);
             ImageMessage msg=new ImageMessage();
-            if (queue.TryDequeue(out msg))
+            while (queue.TryDequeue(out msg))
             {
                 MemoryStream stream=new MemoryStream(msg.bitmap);
                 JpegBitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
@@ -39,12 +40,9 @@ namespace pds2.ClientSide
                         msg.img_size.Height));
                     this.Width = msg.total_img_size.Width;
                     this.Height = msg.total_img_size.Height;
-                    base.OnRender(dc);
+                    
             }
-            else
-            {
-                base.OnRender(dc);
-            }
+            
         }
        
     }

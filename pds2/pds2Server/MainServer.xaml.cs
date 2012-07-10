@@ -297,7 +297,7 @@ namespace pds2.ServerSide
             set
             {
                 _kstop = value;
-                MyStopCommand.InputGestures.Add(new KeyGesture(_kstart, ModifierKeys.Control));
+                MyStopCommand.InputGestures.Add(new KeyGesture(_kstop, ModifierKeys.Control));
             }
         }
         private void InfoServerClick(object sender, RoutedEventArgs e)
@@ -308,6 +308,8 @@ namespace pds2.ServerSide
         {
             this.startStreamVideo(sender, e);
             strm.IsChecked = true;
+            MyStartCommand.InputGestures.Add(new KeyGesture(_kstart, ModifierKeys.Control));
+
 
         }
         private void MyStopCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -315,6 +317,7 @@ namespace pds2.ServerSide
 
             this.startStreamVideo(sender, e);
             strm.IsChecked = false;
+            MyStopCommand.InputGestures.Add(new KeyGesture(_kstop, ModifierKeys.Control));
         }
 
 

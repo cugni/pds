@@ -21,6 +21,7 @@ namespace pds2.ServerSide
         public Impostazioni()
         {
             InitializeComponent();
+            this.Loaded += this.Impostazioni_Load;
         }
    
         
@@ -85,7 +86,7 @@ namespace pds2.ServerSide
 
       
 
-        private void Impostazioni_Load(object sender, EventArgs e)
+        public void Impostazioni_Load(object sender, EventArgs e)
         {
 
            

@@ -93,8 +93,8 @@ namespace pds2.ServerSide
                 _connect = false;
                 try
                 {
-                    new TextMessage(MessageType.DISCONNECT, "pool Disconnect",
-                        "Il pool ha interrotto la comunicazione").sendMe(_textTcp.GetStream());
+                    new TextMessage(MessageType.DISCONNECT, "Disconnect",
+                        "Il server ha interrotto la comunicazione").sendMe(_textTcp.GetStream());
                 }
                 catch (Exception) { }
                 _textReceiver.Abort();
