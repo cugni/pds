@@ -40,7 +40,7 @@
 
             </StatusBarItem>
         </StatusBar>
-        <RichTextBox Grid.Column="1" Name="chatHistory" Background="#5569A669" Grid.Row="1" AllowDrop="False" AutoWordSelection="False" />
+        <RichTextBox Grid.Column="1" Name="chatHistory" Background="#5569A669" Grid.Row="1" AllowDrop="False" AutoWordSelection="False" VerticalScrollBarVisibility="Auto" />
         <TabControl Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" MinHeight="200" MinWidth="200"
                     Name="tabControl" >
             <TabItem Header="Connessione" Name="impConnessione">
@@ -54,7 +54,7 @@
             </TabItem>
         </TabControl>
         <Menu  Name="menu" Grid.ColumnSpan="2" >
-                <MenuItem Header="_File"   >
+                <MenuItem Header="_File" >
                 <MenuItem Header="_Connetti" Name="conButton" Click="_Connetti_Click" IsCheckable="true" />
                 <MenuItem Header="_Stream video" IsCheckable="true" Click="startStreamVideo"/>
                 <MenuItem Header="_Esci"/>

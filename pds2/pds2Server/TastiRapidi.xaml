@@ -21,7 +21,7 @@
                 <Label Content="+" Height="28" HorizontalAlignment="Right" Margin="0,8,114,0" Name="label1" VerticalAlignment="Top" />
                 <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="6,57,0,0" Name="btnOk" VerticalAlignment="Top" Width="75" Click="btnOk_Click" />
                 <Button Content="Annulla" Height="23" HorizontalAlignment="Left" Margin="127,57,0,0" Name="btnAnnulla" VerticalAlignment="Top" Width="75" />
-                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,7,22,0" Name="comboBox1" VerticalAlignment="Top" Width="75" MaxDropDownHeight="5">
+                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,7,22,0" Name="comboBox1" VerticalAlignment="Top" Width="75" MaxDropDownHeight="92">
                     <ComboBoxItem Content="F1" IsSelected="True" />
                     <ComboBoxItem Content="F2" />
                     <ComboBoxItem Content="F3" />
