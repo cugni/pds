@@ -112,6 +112,7 @@ namespace pds2.ClientSide
         {
             try
             {
+                if(client.IsConnect)
                 client.Disconnect();
             }
             finally

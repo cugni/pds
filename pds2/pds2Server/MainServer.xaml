@@ -57,7 +57,7 @@
                 <MenuItem Header="_File" >
                 <MenuItem Header="_Connetti" Name="conButton" Click="_Connetti_Click" IsCheckable="true" />
                 <MenuItem Header="_Stream video" IsCheckable="true" Click="startStreamVideo"/>
-                <MenuItem Header="_Esci"/>
+                <MenuItem Header="_Esci" Click="MenuItem_Click_1"/>
                 </MenuItem>
                 <MenuItem Header="_Impostazioni">
                     <MenuItem Header="_Impostazioni connessione"  />

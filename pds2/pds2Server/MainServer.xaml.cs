@@ -251,6 +251,20 @@ namespace pds2.ServerSide
             MessageBox.Show("Created by \nCesare Cugnasco & Mauro Canuto", "Info");
         }
 
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (server.IsConnect)
+                    server.Disconnect();
+            }
+            finally
+            {
+                this.Close();
+            }
+
+        }
+
 
     }
 }

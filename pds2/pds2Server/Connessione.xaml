@@ -4,8 +4,8 @@
     <Grid>
         <Label Content="Porta: " Height="28" HorizontalAlignment="Left" Margin="24,29,0,0" Name="label1" VerticalAlignment="Top" />
         <Label Content="Password: " Height="28" HorizontalAlignment="Left" Margin="24,63,0,0" Name="label2" VerticalAlignment="Top" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="106,29,0,0" Name="txtPorta" VerticalAlignment="Top" Width="120" />
-        <PasswordBox Height="23" HorizontalAlignment="Left" Margin="106,63,0,0" Name="txtPassword" VerticalAlignment="Top" Width="120" Visibility="Visible" />
+        <TextBox Text="2626" Height="23" HorizontalAlignment="Left" Margin="106,29,0,0" Name="txtPorta" VerticalAlignment="Top" Width="120" />
+        <PasswordBox Password="password" Height="23" HorizontalAlignment="Left" Margin="106,63,0,0" Name="txtPassword" VerticalAlignment="Top" Width="120" Visibility="Visible" />
         <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="122,106,0,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
     </Grid>
 </UserControl>

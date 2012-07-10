@@ -51,10 +51,7 @@ namespace pds2.ServerSide
         public WorkerPool(IConnection server, BlockingCollection<ImageMessage> videoQueue)
         {
             this.server = server;
-
             this.videoQueue = videoQueue;
-
-
         }
 
         public void RequestStop()

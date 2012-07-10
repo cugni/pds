@@ -19,9 +19,7 @@ namespace pds2.ServerSide
 {
     public abstract class Workers
     {
-
         protected System.Drawing.Point p;
-
         private int nMilli = 1000;
         protected Bitmap oldBitmap;
         protected static IntPtr m_HBitmap;
