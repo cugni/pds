@@ -11,10 +11,11 @@
             <Grid>
                 <StackPanel  >
                     
-                    <RadioButton GroupName="Capture" Content="Finestra attiva" Height="16" Name="windowType" />
-                    <RadioButton GroupName="Capture" Content="Regione dello schermo" Height="16" Name="screenType" />
-                    <RadioButton GroupName="Capture"  Content="Schemo intero" Height="16" Name="fullScreenType" />
-                    <Button Content="salva"   Height="23" HorizontalAlignment="Center" Name="salva" VerticalAlignment="Top" Width="75" Click="salva" />
+                    <RadioButton GroupName="Capture" Content="Finestra attiva" Height="16" Name="windowType" Checked="disableSelezione" />
+                    <RadioButton GroupName="Capture" Content="Regione dello schermo" Height="16" Name="screenType"  Checked="abilitaSelezione"/>
+                    <RadioButton GroupName="Capture"  Content="Schemo intero" Height="16" Name="fullScreenType"  Checked="disableSelezione" />
+                    <Button Content="salva"   Height="23" HorizontalAlignment="Center" Name="salvaButton"
+                            VerticalAlignment="Top" Width="75" Click="salva" />
 
                 </StackPanel>
             </Grid>

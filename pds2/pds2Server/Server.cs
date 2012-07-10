@@ -102,12 +102,16 @@ namespace pds2.ServerSide
             {
                 _connect = true;
                 _accepterConn = new Thread(_receiveConnection);
+                _accepterConn.IsBackground = true;
                 _accepterConn.Start();
                 _chatDispatcher = new Thread(_dispatchChat);
+                _chatDispatcher.IsBackground = true;
                 _chatDispatcher.Start();
                 _clipboardDispatcher = new Thread(_dispatchClipboard);
+                _clipboardDispatcher.IsBackground = true;
                 _clipboardDispatcher.Start();
                 _videoDispatcher = new Thread(_dispatchVideo);
+                _videoDispatcher.IsBackground = true;
                 _videoDispatcher.Start();
                 if (connectionStateEvent != null)
                     connectionStateEvent(true);

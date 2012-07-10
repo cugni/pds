@@ -62,7 +62,7 @@ namespace pds2.ServerSide
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void salva(object sender, EventArgs e)
         {
             if (windowType.IsChecked == true) setTipoCattura(CaptureType.ACTIVE_WINDOW);
             if (screenType.IsChecked == true)
@@ -177,10 +177,18 @@ namespace pds2.ServerSide
 
         }
 
-        private void salva(object sender, EventArgs e)
+        private void disableSelezione(object sender, EventArgs e)
         {
+            region.IsEnabled = false;
 
         }
+        private void abilitaSelezione(object sender, EventArgs e)
+        {
+            region.IsEnable = true;
+           
+        }
+        
+        
         private void default_Click(object sender, EventArgs e)
         {
             setScreen(200, 200, 500, 500);
