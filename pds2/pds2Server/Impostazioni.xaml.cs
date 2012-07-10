@@ -184,7 +184,7 @@ namespace pds2.ServerSide
         }
         private void abilitaSelezione(object sender, EventArgs e)
         {
-            region.IsEnable = true;
+            region.IsEnabled = true;
            
         }
         
