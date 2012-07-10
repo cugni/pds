@@ -327,12 +327,11 @@ namespace pds2.ClientSide
             imposta();
             
         }
-
         private void InfoClick(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Created by \nCesare Cugnasco & Mauro Canuto", "Info");
         }
-
+        
         
     }
 }

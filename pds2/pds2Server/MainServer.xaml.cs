@@ -16,6 +16,7 @@ using pds2.Shared.Messages;
 
 using System.IO;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace pds2.ServerSide
 {
@@ -30,12 +31,15 @@ namespace pds2.ServerSide
         public event Action shareVideo;
         public MainServerWindow()
         {
-            server = new Server(this);            
+            server = new Server(this);
             InitializeComponent();
             server.connectionStateEvent += _setState;
             server.receivedMessage += addChatLogText;
             server.receivedClipboard += _handleClipboard;
             impVideo.setWorkingPool(((Server)server).workerPool);
+            kstart = Key.Up;
+            kstop = Key.Down;
+        
         }
         private void _setState(bool connect)
         {
@@ -74,16 +78,16 @@ namespace pds2.ServerSide
             switch (msg.messageType)
             {
                 case MessageType.TEXT:
-                    chatHistory.AppendText(msg.username + " : " + msg.message+"\n");
+                    chatHistory.AppendText(msg.username + " : " + msg.message + "\n");
                     break;
                 default:
-                    chatHistory.AppendText(msg.username + " : " + msg.message+"\n");
+                    chatHistory.AppendText(msg.username + " : " + msg.message + "\n");
                     break;
             }
         }
-      
 
-        
+
+
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
@@ -97,9 +101,9 @@ namespace pds2.ServerSide
             chatInputField.Text = "";
 
         }
-        private void chatInputField_KeyDown(object sender,  KeyEventArgs e)
+        private void chatInputField_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key.Equals(Key.Enter)&&server.IsConnect)
+            if (e.Key.Equals(Key.Enter) && server.IsConnect)
             {
                 _invia();
             }
@@ -111,12 +115,12 @@ namespace pds2.ServerSide
             {
                 if (server.IsConnect)
                 {
-                    server.Disconnect();                   
+                    server.Disconnect();
                 }
                 else
                 {
                     server.Connect();
-                    
+
                 }
             }
             catch (Exception ex)
@@ -132,17 +136,18 @@ namespace pds2.ServerSide
         }
 
 
-        private void _handleClipboard(ClipboardMessage cm){
+        private void _handleClipboard(ClipboardMessage cm)
+        {
 
             Dispatcher.Invoke(new ClipboardMessageDelegate(__handleClipboard), cm);
         }
         private void __handleClipboard(ClipboardMessage cm)
         {
-             
+
             switch (cm.clipboardType)
             {
                 case ClipBoardType.TEXT:
-                     chatHistory.AppendText("Ricevuto testo in clipboard \n" + cm.text);
+                    chatHistory.AppendText("Ricevuto testo in clipboard \n" + cm.text);
                     System.Windows.Clipboard.SetText(cm.text);
                     break;
                 case ClipBoardType.BITMAP:
@@ -151,14 +156,14 @@ namespace pds2.ServerSide
                     System.Windows.Forms.Clipboard.SetImage((Bitmap)cm.bitmap);
                     break;
                 case ClipBoardType.FILE:
-                    chatHistory.AppendText("Ricevuto file in clipboard \n" );
+                    chatHistory.AppendText("Ricevuto file in clipboard \n");
                     System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
                     dlg.Description = "Seleziona una cartella dove salvare il file ricevuto";
-                    
-                    if (dlg.ShowDialog().Equals(  System.Windows.Forms.
+
+                    if (dlg.ShowDialog().Equals(System.Windows.Forms.
                         DialogResult.OK))
                     {
-                        string fname = dlg.SelectedPath+"\\"
+                        string fname = dlg.SelectedPath + "\\"
                             + cm.filename;
                         BinaryWriter bWrite = new BinaryWriter(File.Open(fname, FileMode.Create));
                         chatHistory.AppendText("Salvato file in Ricevuto file in " + fname + " \n");
@@ -168,19 +173,19 @@ namespace pds2.ServerSide
                     break;
 
             }
-           
+
         }
 
         private void _sendClipboard(object sender, EventArgs e)
         {
             ClipboardMessage ms = new ClipboardMessage(server.Username);
-           
+
             IDataObject d = Clipboard.GetDataObject();
             if (d.GetDataPresent(DataFormats.Text))  //invio testo
             {
                 try
                 {
-                   
+
                     ms.clipboardType = ClipBoardType.TEXT;
                     ms.text = (string)d.GetData(DataFormats.Text);
                     shareClipboard(ms);
@@ -194,7 +199,7 @@ namespace pds2.ServerSide
             }
             else if (d.GetDataPresent(DataFormats.FileDrop, true))  //invio file
             {
-                
+
                 ms.clipboardType = ClipBoardType.FILE;
                 object fromClipboard = d.GetData(DataFormats.FileDrop, true);
                 foreach (string sourceFileName in (Array)fromClipboard)
@@ -224,7 +229,7 @@ namespace pds2.ServerSide
 
             else if (Clipboard.ContainsImage())
             {
-                
+
                 ms.clipboardType = ClipBoardType.BITMAP;
 
                 ms.bitmap = (Bitmap)System.Windows.Forms.Clipboard.GetImage();
@@ -265,6 +270,53 @@ namespace pds2.ServerSide
             }
 
         }
+
+        private Key _kstart = Key.Up
+            , _kstop = Key.Down;
+        public Key kstart
+        {
+            get
+            {
+                return _kstart;
+            }
+            set
+            {
+                _kstart = value;
+                MyStartCommand.InputGestures.Add(new KeyGesture(_kstart, ModifierKeys.Control));
+
+            }
+        }
+        public static RoutedCommand MyStartCommand = new RoutedCommand();
+        public static RoutedCommand MyStopCommand = new RoutedCommand();
+        public Key kstop
+        {
+            get
+            {
+                return _kstop;
+            }
+            set
+            {
+                _kstop = value;
+                MyStopCommand.InputGestures.Add(new KeyGesture(_kstart, ModifierKeys.Control));
+            }
+        }
+        private void InfoServerClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Created by \nCesare Cugnasco & Mauro Canuto", "Info");
+        }
+        private void MyStartCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.startStreamVideo(sender, e);
+            strm.IsChecked = true;
+
+        }
+        private void MyStopCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            this.startStreamVideo(sender, e);
+            strm.IsChecked = false;
+        }
+
 
 
     }

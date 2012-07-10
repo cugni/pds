@@ -56,7 +56,7 @@
         <Menu  Name="menu" Grid.ColumnSpan="2" >
                 <MenuItem Header="_File" >
                 <MenuItem Header="_Connetti" Name="conButton" Click="_Connetti_Click" IsCheckable="true" />
-                <MenuItem Header="_Stream video" IsCheckable="true" Click="startStreamVideo"/>
+                <MenuItem Header="_Stream video" IsCheckable="true" Name="strm" Click="startStreamVideo"/>
                 <MenuItem Header="_Esci" Click="MenuItem_Click_1"/>
                 </MenuItem>
                 <MenuItem Header="_Impostazioni">
@@ -64,12 +64,16 @@
 
                 </MenuItem>
                 <MenuItem Header="_Aiuto">
-                <MenuItem Header="_Informazioni" IsCheckable="false" Click="InfoClick"/>
+                <MenuItem Header="_Informazioni" IsCheckable="false" Click="InfoServerClick"/>
 
                 </MenuItem>
 
             </Menu>
     </Grid>
-   
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainServerWindow.MyStartCommand}" Executed="MyStartCommandExecuted"/>
+        <CommandBinding Command="{x:Static local:MainServerWindow.MyStopCommand}" Executed="MyStopCommandExecuted"/>
+    </Window.CommandBindings>
 
 </Window>

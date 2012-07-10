@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace pds2.ServerSide
 {
     /// <summary>
@@ -23,12 +24,22 @@ namespace pds2.ServerSide
         {
             InitializeComponent();
         }
-
+        private MainServerWindow _father;
+        public void setFather(MainServerWindow father)
+        {
+            this._father = father;
+            
+        }
+        
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            ComboBoxItem selected = (ComboBoxItem)comboBox1.SelectedValue;
+          //  ComboBoxItem selected = (ComboBoxItem)comboBox1.SelectedValue;
             //string txt = "scelto-> " + selected.Content.ToString();
-            
+            KeyConverter con = new KeyConverter();
+           Key keystart = (Key)con.ConvertFromString(keyStart.Text);
+           Key keystop = (Key)con.ConvertFromString(keyStop.Text);
+            _father.kstart = keystart;
+            _father.kstop = keystop;
         }
 
 

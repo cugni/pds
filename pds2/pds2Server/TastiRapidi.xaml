@@ -5,23 +5,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <GroupBox Header="Controllo" Margin="12,0,106,70">
-            <Grid>
-                <StackPanel Margin="0,0,0,0" Height="43" VerticalAlignment="Top">
-
-                    <RadioButton IsChecked="True"  GroupName="Cattura" Content="Attiva Cattura" Height="16" Name="attivaCattura" />
-                    <RadioButton GroupName="Cattura" Content="Disattiva Cattura" Height="16" Name="disattivaCattura" />
-                    
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-        <Expander IsExpanded="True" Header="Shortcuts" Name="shortcuts" Margin="0,86,0,72" Grid.RowSpan="2">
-            <Grid Height="108" Width="224" >
-                <Label Content="+" Height="28" HorizontalAlignment="Right" Margin="0,8,114,0" Name="label1" VerticalAlignment="Top" />
-                <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="6,57,0,0" Name="btnOk" VerticalAlignment="Top" Width="75" Click="btnOk_Click" />
-                <Button Content="Annulla" Height="23" HorizontalAlignment="Left" Margin="127,57,0,0" Name="btnAnnulla" VerticalAlignment="Top" Width="75" />
-                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,7,22,0" Name="comboBox1" VerticalAlignment="Top" Width="75" MaxDropDownHeight="92">
+            
+            <Grid  Grid.Row="0" Height="108" Width="224" >
+           
+            <Label Content="+" Height="28" HorizontalAlignment="Right" Margin="0,43,114,0" VerticalAlignment="Top" />
+                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,42,22,0" Name="keyStart" VerticalAlignment="Top" Width="75" MaxDropDownHeight="92">
                     <ComboBoxItem Content="F1" IsSelected="True" />
                     <ComboBoxItem Content="F2" />
                     <ComboBoxItem Content="F3" />
@@ -37,9 +27,33 @@
                     <ComboBoxItem Content="UP" />
                     <ComboBoxItem Content="DOWN"/>
                 </ComboBox>
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="textBox1" VerticalAlignment="Top" Width="75" IsReadOnlyCaretVisible="True" IsEnabled="False" Text="CTRL" TextAlignment="Center" />
-            </Grid>
-        </Expander>
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="6,41,0,0"   VerticalAlignment="Top" Width="75" IsReadOnlyCaretVisible="True" IsEnabled="False" Text="CTRL" TextAlignment="Center" />
+            <Label Content="Attiva video :" Height="28" HorizontalAlignment="Left" Margin="5,12,0,0" Name="label1" VerticalAlignment="Top" Width="76" />
+        </Grid>
+        <Grid Grid.Row="1" Height="108" Width="224" >
+                <Label Content="+" Height="28" HorizontalAlignment="Right" Margin="0,47,114,0"  VerticalAlignment="Top" />
+                <ComboBox Height="23" HorizontalAlignment="Right" Margin="0,46,22,0" Name="keyStop" VerticalAlignment="Top" Width="75" MaxDropDownHeight="92">
+                    <ComboBoxItem Content="F1" IsSelected="True" />
+                    <ComboBoxItem Content="F2" />
+                    <ComboBoxItem Content="F3" />
+                    <ComboBoxItem Content="F4" />
+                    <ComboBoxItem Content="F5" />
+                    <ComboBoxItem Content="F6" />
+                    <ComboBoxItem Content="F7" />
+                    <ComboBoxItem Content="F8" />
+                    <ComboBoxItem Content="F9" />
+                    <ComboBoxItem Content="F10" />
+                    <ComboBoxItem Content="F11" />
+                    <ComboBoxItem Content="F12" />
+                    <ComboBoxItem Content="UP" />
+                    <ComboBoxItem Content="DOWN"/>
+                </ComboBox>
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="6,45,0,0"  VerticalAlignment="Top" Width="75" IsReadOnlyCaretVisible="True" IsEnabled="False" Text="CTRL" TextAlignment="Center" />
+            <Label Content="Disattiva video :" Height="28" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Top" Width="105" />
+
+        </Grid>
+        <Button Grid.Row="2" Content="Salva" Height="23" HorizontalAlignment="Left" Margin="101,22,0,0" Name="btnOk" VerticalAlignment="Top" Width="75" Click="btnOk_Click" />
+       
 
     </Grid>
 </UserControl>

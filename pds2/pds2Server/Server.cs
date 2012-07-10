@@ -94,6 +94,7 @@ namespace pds2.ServerSide
             mcw.shareClipboard += DispatchClipboard;
             _username = "Server";
         }
+      
         public override void Connect()
         {
             if (_connect)
