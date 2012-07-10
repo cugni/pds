@@ -35,6 +35,7 @@ namespace pds2.ServerSide
             server.connectionStateEvent += _setState;
             server.receivedMessage += addChatLogText;
             server.receivedClipboard += _handleClipboard;
+            impVideo.setWorkingPool(((Server)server).workerPool);
         }
         private void _setState(bool connect)
         {

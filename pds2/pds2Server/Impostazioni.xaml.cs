@@ -23,7 +23,7 @@ namespace pds2.ServerSide
             InitializeComponent();
         }
    
-        private CaptureType tipoCattura;
+        
         private bool flagInit;
         private bool disabilita;
         private string Window_desc = "Capture the portion of the screen corresponding to the acrive window in a certain moment.(Default)";
@@ -36,13 +36,13 @@ namespace pds2.ServerSide
 
         public  void setTipoCattura(CaptureType tipoCattura)
         {
-            this.tipoCattura = tipoCattura;
+            pool.tipoCattura = tipoCattura;
              
         }
 
         public CaptureType getTipoCattura()
         {
-            return tipoCattura;
+            return pool.tipoCattura;
         }
 
         public void setScreen(int x, int y, int w, int h)
@@ -53,7 +53,7 @@ namespace pds2.ServerSide
             h_s = h;
         }
         private WorkerPool pool;
-        public Impostazioni(WorkerPool server)
+        public void setWorkingPool(WorkerPool server)
         {
             this.pool = server;
             disabilita = true;
@@ -95,7 +95,7 @@ namespace pds2.ServerSide
             System.Drawing.Rectangle r = pool.tot_img_size;
 
             setScreen(r.X, r.Y, r.Width, r.Height);
-            switch (tipoCattura)
+            switch (pool.tipoCattura)
             {
                 case CaptureType.ACTIVE_WINDOW:
                     windowType.IsChecked = true; region.IsEnabled = false;
@@ -176,8 +176,11 @@ namespace pds2.ServerSide
             //aggiornaTrackbar();
 
         }
- 
 
+        private void salva(object sender, EventArgs e)
+        {
+
+        }
         private void default_Click(object sender, EventArgs e)
         {
             setScreen(200, 200, 500, 500);

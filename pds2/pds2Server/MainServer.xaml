@@ -46,8 +46,8 @@
             <TabItem Header="Connessione" Name="impConnessione">
                 <local:Connessione x:Name="impostazConn" />
             </TabItem>
-            <TabItem Header="Video" Name="impVideo" >
-                <local:Impostazioni x:Name="impostazione" />
+            <TabItem Header="Video" Name="impVideoTab" >
+                <local:Impostazioni x:Name="impVideo" />
             </TabItem>
             <TabItem Header="Shortcuts" Name="tRapidi" >
                 <local:TastiRapidi x:Name="shortcuts" />

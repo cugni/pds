@@ -78,6 +78,13 @@ namespace pds2.ServerSide
             else
                 _wp.RequestStart();            
         }
+        public WorkerPool workerPool
+        {
+            get
+            {
+                return _wp;
+            }
+        }
         public Server(IMainWindow mwc)
             : base(mwc)
         {
