@@ -100,8 +100,6 @@ namespace pds2.ServerSide
                 _chatDispatcher.Start();
                 _clipboardDispatcher = new Thread(_dispatchClipboard);
                 _clipboardDispatcher.Start();
-                _chatDispatcher = new Thread(_dispatchTextMsg);
-                _chatDispatcher.Start();
                 _videoDispatcher = new Thread(_dispatchVideo);
                 _videoDispatcher.Start();
                 if (connectionStateEvent != null)
@@ -159,27 +157,7 @@ namespace pds2.ServerSide
             }
             catch (Exception) { }
         }
-        private void _dispatchTextMsg()
-        {
-
-            while (_connect)
-            {
-                try
-                {
-                    TextMessage msg = msgQueue.Take();
-                    ReceivedMessage(msg);
-                    foreach (ClientConnection cli in clients)
-                    {
-                        cli.sendChat(msg);
-
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                    return; //the queue has been closed
-                }
-            }
-        }
+      
         private void _dispatchVideo()
         {
             while (_connect)
