@@ -35,7 +35,9 @@
         </StatusBar>
         <TabControl  MinHeight="200" MinWidth="200" Grid.Row="1" Grid.Column="0" Grid.RowSpan="3">
             <TabItem Header="Video">
+                <Viewbox  StretchDirection="Both" Stretch="Fill" >
                 <local:VideoCanvas x:Name="canvas"/>
+                </Viewbox>
             </TabItem>
         </TabControl>
         <RichTextBox Grid.Column="1" Name="chatHistory" Background="#1B000000" Grid.Row="1" />

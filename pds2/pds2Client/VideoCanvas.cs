@@ -37,6 +37,8 @@ namespace pds2.ClientSide
                     new Rect(msg.img_size.X, msg.img_size.Y,
                         msg.img_size.Width,
                         msg.img_size.Height));
+                    this.Width = msg.total_img_size.Width;
+                    this.Height = msg.total_img_size.Height;
                     base.OnRender(dc);
             }
             else
